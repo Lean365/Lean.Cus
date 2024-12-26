@@ -1,0 +1,42 @@
+﻿<!--
+===================================================
+项目名称：Lean.Cus.Application
+文件名称：Lean.Cus.Application.csproj
+文件版本：V1.0.0
+创建人员：Lean
+创建时间：2024.01.01
+更新时间：2024.01.01
+备注说明：应用层项目配置文件
+===================================================
+-->
+
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- 项目基本信息 -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- NuGet包引用 -->
+  <ItemGroup>
+    <!-- 对象映射相关包 -->
+    <PackageReference Include="Mapster" Version="7.4.0" />
+    
+    <!-- ASP.NET Core相关包 -->
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
+    
+    <!-- ORM相关包 -->
+    <PackageReference Include="SqlSugarCore" Version="5.1.4.172" />
+  </ItemGroup>
+
+  <!-- 项目引用 -->
+  <ItemGroup>
+    <ProjectReference Include="..\Lean.Cus.Domain\Lean.Cus.Domain.csproj" />
+    <ProjectReference Include="..\Lean.Cus.Common\Lean.Cus.Common.csproj" />
+    <ProjectReference Include="..\Lean.Cus.Infrastructure\Lean.Cus.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
