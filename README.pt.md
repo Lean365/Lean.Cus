@@ -55,7 +55,7 @@ npm run dev
 Lean.Cus/
 ├── Backend/
 │   └── src/
-│       ├���─ Lean.Cus.Api           # Camada API Web
+│       ├── Lean.Cus.Api           # Camada API Web
 │       ├── Lean.Cus.Application   # Camada de Aplicação
 │       ├── Lean.Cus.Domain        # Camada de Domínio
 │       ├── Lean.Cus.Infrastructure# Camada de Infraestrutura
@@ -97,4 +97,12 @@ Este projeto está sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para m
 
 ## 📞 Suporte
 
-Para suporte, por favor crie uma issue no repositório GitHub. 
+Para suporte, por favor crie uma issue no repositório GitHub.
+
+## ⚠️ Aviso
+
+Este é um sistema gerado pelo Cursor. Os usuários devem ter conhecimento das tecnologias .NET e Vue.js para trabalhar efetivamente com este projeto. A base de código requer compreensão de:
+- Desenvolvimento e arquitetura .NET Core
+- Framework Vue.js e Ant Design
+- Operações de banco de dados com SqlSugar ORM
+- Integração frontend-backend 

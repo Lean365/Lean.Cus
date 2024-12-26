@@ -97,4 +97,12 @@ Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de
 
 ## 📞 Support
 
-Pour le support, veuillez créer une issue dans le dépôt GitHub. 
+Pour le support, veuillez créer une issue dans le dépôt GitHub.
+
+## ⚠️ Avertissement
+
+Ceci est un système généré par Cursor. Les utilisateurs doivent avoir des connaissances des technologies .NET et Vue.js pour travailler efficacement avec ce projet. La base de code nécessite une compréhension de :
+- Développement et architecture .NET Core
+- Framework Vue.js et Ant Design
+- Opérations de base de données avec SqlSugar ORM
+- Intégration frontend-backend 

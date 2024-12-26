@@ -83,7 +83,7 @@ Lean.Cus/
 - Protección XSS
 - Protección CSRF
 
-## 📝 Documentación API
+## 📝 Documentaci��n API
 
 La documentación API está disponible en `/swagger` en modo desarrollo.
 
@@ -97,4 +97,12 @@ Este proyecto está bajo la licencia MIT - ver el archivo [LICENSE](LICENSE) par
 
 ## 📞 Soporte
 
-Para soporte, por favor cree un issue en el repositorio de GitHub. 
+Para soporte, por favor cree un issue en el repositorio de GitHub.
+
+## ⚠️ Advertencia
+
+Este es un sistema generado por Cursor. Los usuarios deben tener conocimientos de tecnologías .NET y Vue.js para trabajar eficazmente con este proyecto. La base de código requiere comprensión de:
+- Desarrollo y arquitectura de .NET Core
+- Framework Vue.js y Ant Design
+- Operaciones de base de datos con SqlSugar ORM
+- Integración frontend-backend 

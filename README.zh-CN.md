@@ -97,4 +97,12 @@ Lean.Cus/
 
 ## 📞 支持
 
-如需支持，请在 GitHub 仓库中创建 Issue。 
+如需支持，请在 GitHub 仓库中创建 Issue。
+
+## ⚠️ 警告说明
+
+这是一个由 Cursor 生成的系统。用户需要具备 .NET 和 Vue.js 相关技术知识才能有效地使用此项目。代码库要求理解：
+- .NET Core 开发和架构
+- Vue.js 框架和 Ant Design
+- SqlSugar ORM 数据库操作
+- 前后端集成 
