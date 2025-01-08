@@ -1,17 +1,5 @@
-<!--
-===================================================
-项目名称：Lean.Cus.Api
-文件名称：Lean.Cus.Api.csproj
-文件版本：V1.0.0
-创建人员：Lean
-创建时间：2024.01.01
-更新时间：2024.01.01
-备注说明：API项目配置文件
-===================================================
--->
-
 <Project Sdk="Microsoft.NET.Sdk.Web">
-  <!-- 项目基本信息 -->
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -20,46 +8,16 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
-  <!-- NuGet包引用 -->
   <ItemGroup>
-    <!-- Swagger相关包 -->
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1" />
-    <PackageReference Include="SqlSugarCore" Version="5.1.4.172" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-    
-    <!-- JWT认证相关包 -->
+    <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
-    
-    <!-- Entity Framework Core相关包 -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-
-    <PackageReference Include="NLog" Version="5.2.8" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="8.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
-  <!-- 项目引用 -->
   <ItemGroup>
-    <ProjectReference Include="..\Lean.Cus.Application\Lean.Cus.Application.csproj" />
     <ProjectReference Include="..\Lean.Cus.Infrastructure\Lean.Cus.Infrastructure.csproj" />
-    <ProjectReference Include="..\Lean.Cus.Common\Lean.Cus.Common.csproj" />
-    <ProjectReference Include="..\Lean.Cus.Domain\Lean.Cus.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Extensions\" />
-    <Folder Include="Filters\" />
-    <Folder Include="Hubs\" />
-  </ItemGroup>
-
-</Project>
+</Project> 
