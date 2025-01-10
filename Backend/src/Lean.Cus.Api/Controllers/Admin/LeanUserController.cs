@@ -1,9 +1,11 @@
+using Lean.Cus.Application.Interfaces.Admin;
+using Lean.Cus.Application.Dtos.Admin;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Lean.Cus.Application.Dtos.Admin;
-using Lean.Cus.Application.IServices.Admin;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+using Lean.Cus.Common.Paging;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace Lean.Cus.Api.Controllers.Admin;
 
@@ -12,13 +14,12 @@ namespace Lean.Cus.Api.Controllers.Admin;
 /// </summary>
 [Route("api/admin/[controller]")]
 [ApiController]
-[Authorize]
 public class LeanUserController : ControllerBase
 {
     private readonly ILeanUserService _userService;
 
     /// <summary>
-    /// 构造函数
+    /// 初始化用户控制器
     /// </summary>
     /// <param name="userService">用户服务</param>
     public LeanUserController(ILeanUserService userService)
@@ -27,191 +28,94 @@ public class LeanUserController : ControllerBase
     }
 
     /// <summary>
-    /// 获取用户列表
-    /// </summary>
-    /// <param name="queryDto">查询条件</param>
-    /// <returns>用户列表</returns>
-    [HttpGet("list")]
-    public async Task<ActionResult<List<LeanUserDto>>> GetListAsync([FromQuery] LeanUserQueryDto queryDto)
-    {
-        var list = await _userService.GetListAsync(queryDto);
-        return Ok(list);
-    }
-
-    /// <summary>
-    /// 获取用户信息
-    /// </summary>
-    /// <param name="id">用户ID</param>
-    /// <returns>用户信息</returns>
-    [HttpGet("{id}")]
-    public async Task<ActionResult<LeanUserDto>> GetAsync(long id)
-    {
-        var user = await _userService.GetAsync(id);
-        return Ok(user);
-    }
-
-    /// <summary>
-    /// 获取当前用户信息
-    /// </summary>
-    /// <returns>用户信息</returns>
-    [HttpGet("info")]
-    public async Task<ActionResult<LeanUserDto>> GetCurrentUserInfoAsync()
-    {
-        // 从Token中获取用户ID
-        var userId = User.GetUserId();
-        var user = await _userService.GetUserInfoAsync(userId);
-        return Ok(user);
-    }
-
-    /// <summary>
     /// 新增用户
     /// </summary>
-    /// <param name="createDto">创建信息</param>
-    /// <returns>操作结果</returns>
     [HttpPost]
-    public async Task<ActionResult<bool>> CreateAsync([FromBody] LeanUserCreateDto createDto)
+    public async Task<ActionResult<LeanUserDto>> Add([FromBody] LeanUserDto user)
     {
-        // 检查用户名是否唯一
-        if (await _userService.CheckUserNameExistsAsync(createDto.UserName))
-        {
-            return BadRequest("用户名已存在");
-        }
-
-        // 检查手机号是否唯一
-        if (!string.IsNullOrEmpty(createDto.Phone) && await _userService.CheckPhoneExistsAsync(createDto.Phone))
-        {
-            return BadRequest("手机号已存在");
-        }
-
-        // 检查邮箱是否唯一
-        if (!string.IsNullOrEmpty(createDto.Email) && await _userService.CheckEmailExistsAsync(createDto.Email))
-        {
-            return BadRequest("邮箱已存在");
-        }
-
-        var result = await _userService.CreateAsync(createDto);
+        var result = await _userService.AddAsync(user);
         return Ok(result);
     }
 
     /// <summary>
     /// 更新用户
     /// </summary>
-    /// <param name="id">用户ID</param>
-    /// <param name="updateDto">更新信息</param>
-    /// <returns>操作结果</returns>
-    [HttpPut("{id}")]
-    public async Task<ActionResult<bool>> UpdateAsync(long id, [FromBody] LeanUserUpdateDto updateDto)
+    [HttpPut]
+    public async Task<ActionResult<bool>> Update([FromBody] LeanUserDto user)
     {
-        if (id != updateDto.Id)
-        {
-            return BadRequest("ID不匹配");
-        }
-
-        // 检查手机号是否唯一
-        if (!string.IsNullOrEmpty(updateDto.Phone) && await _userService.CheckPhoneExistsAsync(updateDto.Phone, id))
-        {
-            return BadRequest("手机号已存在");
-        }
-
-        // 检查邮箱是否唯一
-        if (!string.IsNullOrEmpty(updateDto.Email) && await _userService.CheckEmailExistsAsync(updateDto.Email, id))
-        {
-            return BadRequest("邮箱已存在");
-        }
-
-        var result = await _userService.UpdateAsync(updateDto);
+        var result = await _userService.UpdateAsync(user);
         return Ok(result);
     }
 
     /// <summary>
     /// 删除用户
     /// </summary>
-    /// <param name="id">用户ID</param>
-    /// <returns>操作结果</returns>
     [HttpDelete("{id}")]
-    public async Task<ActionResult<bool>> DeleteAsync(long id)
+    public async Task<ActionResult<bool>> Delete(long id)
     {
-        // 检查是否为当前用户
-        var currentUserId = User.GetUserId();
-        if (id == currentUserId)
-        {
-            return BadRequest("不能删除当前用户");
-        }
-
         var result = await _userService.DeleteAsync(id);
         return Ok(result);
     }
 
     /// <summary>
-    /// 重置密码
+    /// 获取用户
     /// </summary>
-    /// <param name="id">用户ID</param>
-    /// <returns>操作结果</returns>
-    [HttpPut("{id}/reset-password")]
-    public async Task<ActionResult<bool>> ResetPasswordAsync(long id)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<LeanUserDto>> Get(long id)
     {
-        var result = await _userService.ResetPasswordAsync(id);
+        var result = await _userService.GetAsync(id);
         return Ok(result);
     }
 
     /// <summary>
-    /// 修改密码
+    /// 获取用户列表
     /// </summary>
-    /// <param name="oldPassword">旧密码</param>
-    /// <param name="newPassword">新密码</param>
-    /// <returns>操作结果</returns>
-    [HttpPut("change-password")]
-    public async Task<ActionResult<bool>> ChangePasswordAsync([FromBody] ChangePasswordDto dto)
+    [HttpGet]
+    public async Task<ActionResult<List<LeanUserDto>>> GetList([FromQuery] LeanUserQueryDto query)
     {
-        var userId = User.GetUserId();
-        var result = await _userService.ChangePasswordAsync(userId, dto.OldPassword, dto.NewPassword);
+        var result = await _userService.GetListAsync(query);
         return Ok(result);
     }
 
     /// <summary>
-    /// 修改用户状态
+    /// 分页查询用户
     /// </summary>
-    /// <param name="id">用户ID</param>
-    /// <param name="status">状态</param>
-    /// <returns>操作结果</returns>
-    [HttpPut("{id}/status")]
-    public async Task<ActionResult<bool>> UpdateStatusAsync(long id, [FromBody] LeanEnabledStatus status)
+    [HttpGet("page")]
+    public async Task<ActionResult<PagedResults<LeanUserDto>>> GetPageList([FromQuery] LeanUserQueryDto query)
     {
-        var result = await _userService.UpdateStatusAsync(id, status);
+        var result = await _userService.GetPagedListAsync(query);
         return Ok(result);
     }
 
     /// <summary>
     /// 导入用户数据
     /// </summary>
-    /// <param name="users">用户数据列表</param>
-    /// <returns>操作结果</returns>
     [HttpPost("import")]
-    public async Task<ActionResult<bool>> ImportAsync([FromBody] List<LeanUserDto> users)
+    public async Task<ActionResult<(List<LeanUserDto> SuccessItems, List<string> ErrorMessages)>> Import([FromForm] IFormFile file)
     {
-        var result = await _userService.ImportUsersAsync(users);
+        using var stream = new MemoryStream();
+        await file.CopyToAsync(stream);
+        var result = await _userService.ImportAsync(stream.ToArray());
         return Ok(result);
     }
 
     /// <summary>
     /// 导出用户数据
     /// </summary>
-    /// <param name="queryDto">查询条件</param>
-    /// <returns>用户数据</returns>
     [HttpGet("export")]
-    public async Task<ActionResult<List<LeanUserDto>>> ExportAsync([FromQuery] LeanUserQueryDto queryDto)
+    public async Task<FileResult> Export([FromQuery] LeanUserQueryDto query)
     {
-        var users = await _userService.ExportUsersAsync(queryDto);
-        return Ok(users);
+        var result = await _userService.ExportAsync(query);
+        return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "users.xlsx");
     }
 
     /// <summary>
-    /// 下载用户导入模板
+    /// 获取导入模板
     /// </summary>
-    /// <returns>模板数据</returns>
-    [HttpGet("import-template")]
-    public ActionResult<LeanUserImportTemplateDto> GetImportTemplateAsync()
+    [HttpGet("import/template")]
+    public async Task<FileResult> GetImportTemplate()
     {
-        return Ok(new LeanUserImportTemplateDto());
+        var result = await _userService.GetImportTemplateAsync();
+        return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "user_import_template.xlsx");
     }
 } 

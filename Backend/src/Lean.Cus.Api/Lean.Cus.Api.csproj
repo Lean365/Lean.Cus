@@ -5,19 +5,19 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="8.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Lean.Cus.Application\Lean.Cus.Application.csproj" />
+    <ProjectReference Include="..\Lean.Cus.Common\Lean.Cus.Common.csproj" />
     <ProjectReference Include="..\Lean.Cus.Infrastructure\Lean.Cus.Infrastructure.csproj" />
+    <ProjectReference Include="..\Lean.Cus.Generator\Lean.Cus.Generator.csproj" />
+    <ProjectReference Include="..\Lean.Cus.Workflow\Lean.Cus.Workflow.csproj" />
   </ItemGroup>
 
-</Project> 
+</Project>

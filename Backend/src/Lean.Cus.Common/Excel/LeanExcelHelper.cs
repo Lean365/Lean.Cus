@@ -1,307 +1,380 @@
-using OfficeOpenXml;
-using OfficeOpenXml.Drawing;
-using OfficeOpenXml.Style;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Drawing;
-using System.Reflection;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
+using OfficeOpenXml.DataValidation;
 
-namespace Lean.Cus.Common.Excel;
-
-/// <summary>
-/// Excel帮助类
-/// </summary>
-public static class LeanExcelHelper
+namespace Lean.Cus.Common.Excel
 {
-    static LeanExcelHelper()
-    {
-        ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-    }
-
     /// <summary>
-    /// 导出Excel
+    /// Excel处理帮助类
     /// </summary>
-    /// <typeparam name="T">数据类型</typeparam>
-    /// <param name="data">数据</param>
-    /// <param name="sheetName">工作表名称</param>
-    /// <param name="excelProperties">Excel属性</param>
-    /// <returns>Excel字节数组</returns>
-    public static byte[] ExportExcel<T>(IEnumerable<T> data, string sheetName = "Sheet1", LeanExcelProperties excelProperties = null)
+    public static class LeanExcelHelper
     {
-        using var package = new ExcelPackage();
-
-        // 设置Excel属性
-        if (excelProperties != null)
+        static LeanExcelHelper()
         {
-            package.Workbook.Properties.Title = excelProperties.Title;
-            package.Workbook.Properties.Subject = excelProperties.Subject;
-            package.Workbook.Properties.Author = excelProperties.Author;
-            package.Workbook.Properties.Company = excelProperties.Company;
-            package.Workbook.Properties.Category = excelProperties.Category;
-            package.Workbook.Properties.Keywords = excelProperties.Keywords;
-            package.Workbook.Properties.Comments = excelProperties.Comments;
-            package.Workbook.Properties.Manager = excelProperties.Manager;
-            package.Workbook.Properties.LastModifiedBy = excelProperties.LastModifiedBy;
-            package.Workbook.Properties.Created = excelProperties.Created ?? DateTime.Now;
-            package.Workbook.Properties.Modified = excelProperties.Modified ?? DateTime.Now;
+            // 设置EPPlus商业许可
+            ExcelPackage.LicenseContext = LicenseContext.Commercial;
         }
 
-        var worksheet = package.Workbook.Worksheets.Add(sheetName);
+        #region 导出
 
-        // 获取属性信息
-        var properties = typeof(T).GetProperties()
-            .Where(p => p.GetCustomAttribute<LeanExcelAttribute>() != null)
-            .OrderBy(p => p.GetCustomAttribute<LeanExcelAttribute>()?.Sort ?? 0)
-            .ToList();
-
-        // 创建表头
-        for (int i = 0; i < properties.Count; i++)
+        /// <summary>
+        /// 导出单个Sheet的Excel
+        /// </summary>
+        /// <typeparam name="T">数据类型</typeparam>
+        /// <param name="data">数据列表</param>
+        /// <param name="sheetName">Sheet名称</param>
+        /// <returns>Excel文件字节数组</returns>
+        public static async Task<byte[]> ExportAsync<T>(IEnumerable<T> data, string sheetName = "Sheet1") where T : class
         {
-            var attr = properties[i].GetCustomAttribute<LeanExcelAttribute>();
-            worksheet.Cells[1, i + 1].Value = attr?.Name ?? properties[i].Name;
-            worksheet.Column(i + 1).Width = attr?.Width ?? 20;
+            var properties = typeof(T).GetProperties()
+                .Where(p => p.GetCustomAttribute<NotMappedAttribute>() == null)
+                .ToDictionary(p => p.Name, p => GetDisplayName(p));
+            return await ExportAsync(data, properties, sheetName);
+        }
 
-            // 设置对齐方式
-            switch (attr?.Align)
+        /// <summary>
+        /// 导出多个Sheet的Excel
+        /// </summary>
+        /// <param name="sheets">Sheet数据（Key: Sheet名称, Value: 数据和列定义）</param>
+        /// <returns>Excel文件字节数组</returns>
+        public static async Task<byte[]> ExportMultiSheetAsync(Dictionary<string, (IEnumerable<object> Data, Dictionary<string, string> Columns)> sheets)
+        {
+            using var package = new ExcelPackage();
+            foreach (var sheet in sheets)
             {
-                case LeanExcelAlign.Center:
-                    worksheet.Cells[1, i + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    break;
-                case LeanExcelAlign.Right:
-                    worksheet.Cells[1, i + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                    break;
-                default:
-                    worksheet.Cells[1, i + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-                    break;
+                var worksheet = package.Workbook.Worksheets.Add(sheet.Key);
+                await WriteSheetDataAsync(worksheet, sheet.Value.Data, sheet.Value.Columns);
+                FormatWorksheet(worksheet);
+            }
+            return await package.GetAsByteArrayAsync();
+        }
+
+        /// <summary>
+        /// 导出数据到Excel（指定列）
+        /// </summary>
+        /// <typeparam name="T">数据类型</typeparam>
+        /// <param name="data">数据列表</param>
+        /// <param name="columns">要导出的列（Key: 属性名, Value: 显示名）</param>
+        /// <param name="sheetName">Sheet名称</param>
+        /// <returns>Excel文件字节数组</returns>
+        public static async Task<byte[]> ExportAsync<T>(IEnumerable<T> data, Dictionary<string, string> columns, string sheetName = "Sheet1") where T : class
+        {
+            using var package = new ExcelPackage();
+            var worksheet = package.Workbook.Worksheets.Add(sheetName);
+            await WriteSheetDataAsync(worksheet, data, columns);
+            FormatWorksheet(worksheet);
+            return await package.GetAsByteArrayAsync();
+        }
+
+        #endregion
+
+        #region 导入
+
+        /// <summary>
+        /// 获取导入模板
+        /// </summary>
+        /// <typeparam name="T">数据类型</typeparam>
+        /// <param name="sheetName">Sheet名称</param>
+        /// <returns>Excel模板文件字节数组</returns>
+        public static async Task<byte[]> GetImportTemplateAsync<T>(string sheetName = "Sheet1") where T : class
+        {
+            var properties = typeof(T).GetProperties()
+                .Where(p => p.GetCustomAttribute<NotMappedAttribute>() == null
+                    && p.GetCustomAttribute<DatabaseGeneratedAttribute>()?.DatabaseGeneratedOption != DatabaseGeneratedOption.Identity)
+                .ToDictionary(p => p.Name, p => GetDisplayName(p));
+
+            using var package = new ExcelPackage();
+            var worksheet = package.Workbook.Worksheets.Add(sheetName);
+
+            // 写入表头
+            var col = 1;
+            foreach (var property in properties)
+            {
+                worksheet.Cells[1, col].Value = property.Value;
+
+                // 添加数据验证和注释
+                var validationAttribute = typeof(T).GetProperty(property.Key)?.GetCustomAttributes<ValidationAttribute>();
+                if (validationAttribute?.Any() == true)
+                {
+                    var comment = string.Join(Environment.NewLine, validationAttribute.Select(x => x.ErrorMessage));
+                    worksheet.Cells[2, col].AddComment(comment ?? "请输入有效值", "系统");
+
+                    // 添加数据验证
+                    var rangeAttribute = validationAttribute.OfType<RangeAttribute>().FirstOrDefault();
+                    if (rangeAttribute != null)
+                    {
+                        var validation = worksheet.Cells[$"B{col}:ZZ{col}"].DataValidation.AddIntegerDataValidation();
+                        validation.Operator = OfficeOpenXml.DataValidation.ExcelDataValidationOperator.between;
+                        validation.Formula.Value = Convert.ToInt32(rangeAttribute.Minimum);
+                        validation.Formula2.Value = Convert.ToInt32(rangeAttribute.Maximum);
+                        validation.ShowErrorMessage = true;
+                        validation.Error = rangeAttribute.ErrorMessage;
+                        validation.ErrorTitle = "输入错误";
+                        validation.ShowInputMessage = true;
+                        validation.PromptTitle = "有效范围";
+                        validation.Prompt = $"请输入 {rangeAttribute.Minimum} 到 {rangeAttribute.Maximum} 之间的数字";
+                    }
+
+                    var regexAttribute = validationAttribute.OfType<RegularExpressionAttribute>().FirstOrDefault();
+                    if (regexAttribute != null)
+                    {
+                        var validation = worksheet.Cells[$"B{col}:ZZ{col}"].DataValidation.AddCustomDataValidation();
+                        validation.Formula.ExcelFormula = $"=MATCH(TRUE,{regexAttribute.Pattern},0)";
+                        validation.ShowErrorMessage = true;
+                        validation.Error = regexAttribute.ErrorMessage;
+                        validation.ErrorTitle = "输入错误";
+                        validation.ShowInputMessage = true;
+                        validation.PromptTitle = "输入规则";
+                        validation.Prompt = regexAttribute.ErrorMessage;
+                    }
+                }
+                col++;
             }
 
+            FormatWorksheet(worksheet);
+            return await package.GetAsByteArrayAsync();
+        }
+
+        /// <summary>
+        /// 导入单个Sheet的数据
+        /// </summary>
+        /// <typeparam name="T">数据类型</typeparam>
+        /// <param name="fileStream">Excel文件流</param>
+        /// <param name="sheetName">Sheet名称</param>
+        /// <returns>导入结果</returns>
+        public static async Task<(List<T> SuccessItems, List<string> ErrorMessages)> ImportAsync<T>(Stream fileStream, string sheetName = null) where T : class, new()
+        {
+            var properties = typeof(T).GetProperties()
+                .Where(p => p.GetCustomAttribute<NotMappedAttribute>() == null
+                    && p.GetCustomAttribute<DatabaseGeneratedAttribute>()?.DatabaseGeneratedOption != DatabaseGeneratedOption.Identity)
+                .ToDictionary(p => p.Name, p => GetDisplayName(p));
+
+            return await ImportAsync<T>(fileStream, properties, sheetName);
+        }
+
+        /// <summary>
+        /// 导入多个Sheet的数据
+        /// </summary>
+        /// <typeparam name="T">数据类型</typeparam>
+        /// <param name="fileStream">Excel文件流</param>
+        /// <param name="sheetConfigs">Sheet配置（Key: Sheet名称, Value: 列映射）</param>
+        /// <returns>导入结果</returns>
+        public static async Task<Dictionary<string, (List<T> SuccessItems, List<string> ErrorMessages)>> ImportMultiSheetAsync<T>(
+            Stream fileStream,
+            Dictionary<string, Dictionary<string, string>> sheetConfigs) where T : class, new()
+        {
+            var result = new Dictionary<string, (List<T> SuccessItems, List<string> ErrorMessages)>();
+            using var package = new ExcelPackage(fileStream);
+
+            foreach (var config in sheetConfigs)
+            {
+                var worksheet = package.Workbook.Worksheets[config.Key];
+                if (worksheet != null)
+                {
+                    var sheetResult = await ImportSheetAsync<T>(worksheet, config.Value);
+                    result.Add(config.Key, sheetResult);
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 导入数据（指定列）
+        /// </summary>
+        /// <typeparam name="T">数据类型</typeparam>
+        /// <param name="fileStream">Excel文件流</param>
+        /// <param name="columns">列映射关系（Key: 属性名, Value: Excel列名）</param>
+        /// <param name="sheetName">Sheet名称</param>
+        /// <returns>导入结果</returns>
+        public static async Task<(List<T> SuccessItems, List<string> ErrorMessages)> ImportAsync<T>(
+            Stream fileStream,
+            Dictionary<string, string> columns,
+            string sheetName = null) where T : class, new()
+        {
+            using var package = new ExcelPackage(fileStream);
+            var worksheet = string.IsNullOrEmpty(sheetName) 
+                ? package.Workbook.Worksheets[0] 
+                : package.Workbook.Worksheets[sheetName];
+
+            if (worksheet == null)
+            {
+                return (new List<T>(), new List<string> { "未找到指定的Sheet" });
+            }
+
+            return await ImportSheetAsync<T>(worksheet, columns);
+        }
+
+        #endregion
+
+        #region 私有方法
+
+        /// <summary>
+        /// 写入Sheet数据
+        /// </summary>
+        private static async Task WriteSheetDataAsync<T>(ExcelWorksheet worksheet, IEnumerable<T> data, Dictionary<string, string> columns)
+        {
+            // 写入表头
+            var col = 1;
+            foreach (var column in columns)
+            {
+                worksheet.Cells[1, col].Value = column.Value;
+                col++;
+            }
+
+            // 写入数据
+            var row = 2;
+            foreach (var item in data)
+            {
+                col = 1;
+                foreach (var column in columns)
+                {
+                    var value = typeof(T).GetProperty(column.Key)?.GetValue(item);
+                    worksheet.Cells[row, col].Value = value;
+                    col++;
+                }
+                row++;
+            }
+
+            await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// 格式化工作表
+        /// </summary>
+        private static void FormatWorksheet(ExcelWorksheet worksheet)
+        {
             // 设置表头样式
-            worksheet.Cells[1, i + 1].Style.Font.Bold = true;
-            if (attr?.Required == true)
-            {
-                worksheet.Cells[1, i + 1].Style.Font.Color.SetColor(Color.Red);
-                worksheet.Cells[1, i + 1].Value = $"{worksheet.Cells[1, i + 1].Value}*";
-            }
+            var headerRange = worksheet.Cells[1, 1, 1, worksheet.Dimension?.Columns ?? 1];
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+            headerRange.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+            headerRange.Style.Border.BorderAround(ExcelBorderStyle.Thin);
+
+            // 自动调整列宽
+            worksheet.Cells.AutoFitColumns();
         }
 
-        // 填充数据
-        int row = 2;
-        foreach (var item in data)
+        /// <summary>
+        /// 导入Sheet数据
+        /// </summary>
+        private static async Task<(List<T> SuccessItems, List<string> ErrorMessages)> ImportSheetAsync<T>(
+            ExcelWorksheet worksheet,
+            Dictionary<string, string> columns) where T : class, new()
         {
-            for (int i = 0; i < properties.Count; i++)
+            var successItems = new List<T>();
+            var errorMessages = new List<string>();
+
+            var rowCount = worksheet.Dimension?.Rows ?? 0;
+            var colCount = worksheet.Dimension?.Columns ?? 0;
+
+            if (rowCount <= 1) // 只有表头或空文件
             {
-                var property = properties[i];
-                var attr = property.GetCustomAttribute<LeanExcelAttribute>();
-                var value = property.GetValue(item);
-                
-                if (value != null)
+                errorMessages.Add("文件为空或只有表头");
+                return (successItems, errorMessages);
+            }
+
+            // 验证表头
+            var headerRow = 1;
+            var columnIndexes = new Dictionary<string, int>();
+            for (int col = 1; col <= colCount; col++)
+            {
+                var headerValue = worksheet.Cells[headerRow, col].Value?.ToString();
+                if (string.IsNullOrEmpty(headerValue)) continue;
+
+                var propertyName = columns.FirstOrDefault(x => x.Value == headerValue).Key;
+                if (!string.IsNullOrEmpty(propertyName))
                 {
-                    var cell = worksheet.Cells[row, i + 1];
-
-                    // 根据数据类型设置值和格式
-                    switch (attr?.Type)
-                    {
-                        case LeanExcelType.DateTime:
-                            if (value is DateTime dateTime)
-                            {
-                                cell.Value = dateTime;
-                                cell.Style.Numberformat.Format = attr.Format ?? "yyyy-MM-dd HH:mm:ss";
-                            }
-                            break;
-                        case LeanExcelType.Decimal:
-                            if (value is decimal decimalValue)
-                            {
-                                cell.Value = decimalValue;
-                                cell.Style.Numberformat.Format = attr.Format ?? "#,##0.00";
-                            }
-                            break;
-                        case LeanExcelType.Bool:
-                            cell.Value = value;
-                            cell.Style.Numberformat.Format = "是;否;";
-                            break;
-                        case LeanExcelType.Image:
-                            if (value is byte[] imageData)
-                            {
-                                using var ms = new MemoryStream(imageData);
-                                var tempPath = Path.GetTempFileName();
-                                File.WriteAllBytes(tempPath, imageData);
-                                var excelImage = worksheet.Drawings.AddPicture($"Image_{row}_{i}", new FileInfo(tempPath));
-                                excelImage.SetPosition(row - 1, 0, i, 0);
-                                excelImage.SetSize(attr.ImageWidth, attr.ImageHeight);
-                                try { File.Delete(tempPath); } catch { }
-                            }
-                            break;
-                        case LeanExcelType.Hyperlink:
-                            if (value is string link)
-                            {
-                                cell.Hyperlink = new Uri(link);
-                                cell.Value = link;
-                                cell.Style.Font.UnderLine = true;
-                                cell.Style.Font.Color.SetColor(Color.Blue);
-                            }
-                            break;
-                        default:
-                            cell.Value = value;
-                            if (!string.IsNullOrEmpty(attr?.Format))
-                            {
-                                cell.Style.Numberformat.Format = attr.Format;
-                            }
-                            break;
-                    }
-
-                    // 设置对齐方式
-                    switch (attr?.Align)
-                    {
-                        case LeanExcelAlign.Center:
-                            cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                            break;
-                        case LeanExcelAlign.Right:
-                            cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
-                            break;
-                        default:
-                            cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-                            break;
-                    }
+                    columnIndexes.Add(propertyName, col);
                 }
             }
-            row++;
-        }
 
-        // 设置数据验证
-        for (int i = 0; i < properties.Count; i++)
-        {
-            var attr = properties[i].GetCustomAttribute<LeanExcelAttribute>();
-            if (attr?.Type == LeanExcelType.ComboBox && attr.ComboBoxItems?.Length > 0)
+            // 开始导入数据
+            for (int row = 2; row <= rowCount; row++)
             {
-                var validation = worksheet.DataValidations.AddListValidation($"{(char)('A' + i)}2:{(char)('A' + i)}{row}");
-                foreach (var item in attr.ComboBoxItems)
+                try
                 {
-                    validation.Formula.Values.Add(item);
-                }
-            }
-        }
-
-        return package.GetAsByteArray();
-    }
-
-    /// <summary>
-    /// 导入Excel
-    /// </summary>
-    /// <typeparam name="T">数据类型</typeparam>
-    /// <param name="fileStream">Excel文件流</param>
-    /// <param name="sheetName">工作表名称</param>
-    /// <returns>数据列表</returns>
-    public static List<T> ImportExcel<T>(Stream fileStream, string sheetName = "Sheet1") where T : new()
-    {
-        using var package = new ExcelPackage(fileStream);
-        var worksheet = package.Workbook.Worksheets[sheetName];
-
-        var properties = typeof(T).GetProperties()
-            .Where(p => p.GetCustomAttribute<LeanExcelAttribute>() != null)
-            .ToList();
-
-        var results = new List<T>();
-        int rows = worksheet.Dimension.Rows;
-        
-        for (int row = 2; row <= rows; row++)
-        {
-            var item = new T();
-            bool hasValue = false;
-
-            for (int i = 0; i < properties.Count; i++)
-            {
-                var property = properties[i];
-                var attr = property.GetCustomAttribute<LeanExcelAttribute>();
-                var cell = worksheet.Cells[row, i + 1];
-                
-                if (cell.Value != null)
-                {
-                    hasValue = true;
-                    var value = cell.Value.ToString();
-                    
-                    if (attr.Required && string.IsNullOrEmpty(value))
-                        throw new Exception($"第{row}行{attr.Name}不能为空");
-
-                    try
+                    var item = new T();
+                    foreach (var column in columnIndexes)
                     {
-                        object convertedValue = null;
-                        switch (attr.Type)
+                        var property = typeof(T).GetProperty(column.Key);
+                        if (property == null) continue;
+
+                        var cellValue = worksheet.Cells[row, column.Value].Value;
+                        if (cellValue != null)
                         {
-                            case LeanExcelType.DateTime:
-                                convertedValue = cell.GetValue<DateTime>();
-                                break;
-                            case LeanExcelType.Decimal:
-                                convertedValue = cell.GetValue<decimal>();
-                                break;
-                            case LeanExcelType.Int:
-                                convertedValue = cell.GetValue<int>();
-                                break;
-                            case LeanExcelType.Long:
-                                convertedValue = cell.GetValue<long>();
-                                break;
-                            case LeanExcelType.Bool:
-                                convertedValue = cell.GetValue<bool>();
-                                break;
-                            default:
-                                convertedValue = value;
-                                break;
-                        }
-
-                        // 验证数据
-                        if (convertedValue != null)
-                        {
-                            // 长度验证
-                            if (convertedValue is string str)
+                            try
                             {
-                                if (attr.MaxLength > 0 && str.Length > attr.MaxLength)
-                                    throw new Exception($"第{row}行{attr.Name}超过最大长度{attr.MaxLength}");
-                                if (attr.MinLength > 0 && str.Length < attr.MinLength)
-                                    throw new Exception($"第{row}行{attr.Name}小于最小长度{attr.MinLength}");
-                            }
+                                var propertyType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+                                object convertedValue;
 
-                            // 数值范围验证
-                            if (convertedValue is decimal decimalValue)
-                            {
-                                if (attr.MaxValue.HasValue && decimalValue > attr.MaxValue.Value)
-                                    throw new Exception($"第{row}行{attr.Name}超过最大值{attr.MaxValue}");
-                                if (attr.MinValue.HasValue && decimalValue < attr.MinValue.Value)
-                                    throw new Exception($"第{row}行{attr.Name}小于最小值{attr.MinValue}");
-                            }
-
-                            // 正则验证
-                            if (!string.IsNullOrEmpty(attr.Regex) && !System.Text.RegularExpressions.Regex.IsMatch(value, attr.Regex))
-                                throw new Exception($"第{row}行{attr.Name}{attr.RegexMessage ?? "格式不正确"}");
+                                if (propertyType.IsEnum)
+                                {
+                                    convertedValue = Enum.Parse(propertyType, cellValue.ToString());
+                                }
+                                else if (propertyType == typeof(DateTime))
+                                {
+                                    convertedValue = DateTime.Parse(cellValue.ToString());
+                                }
+                                else if (propertyType == typeof(bool))
+                                {
+                                    convertedValue = Convert.ToBoolean(cellValue);
+                                }
+                                else
+                                {
+                                    convertedValue = Convert.ChangeType(cellValue, propertyType);
+                                }
 
                             property.SetValue(item, convertedValue);
+                            }
+                            catch (Exception ex)
+                            {
+                                errorMessages.Add($"第{row}行{columns[column.Key]}列数据转换失败：{ex.Message}");
+                                continue;
+                            }
                         }
                     }
-                    catch (Exception ex)
+
+                    // 验证实体
+                    var validationContext = new ValidationContext(item);
+                    var validationResults = new List<ValidationResult>();
+                    if (Validator.TryValidateObject(item, validationContext, validationResults, true))
                     {
-                        throw new Exception($"第{row}行{attr.Name}格式不正确: {ex.Message}");
+                        successItems.Add(item);
+                    }
+                    else
+                    {
+                        errorMessages.Add($"第{row}行数据验证失败：{string.Join(", ", validationResults.Select(x => x.ErrorMessage))}");
                     }
                 }
-                else if (attr.Required)
+                catch (Exception ex)
                 {
-                    throw new Exception($"第{row}行{attr.Name}不能为空");
+                    errorMessages.Add($"第{row}行数据处理失败：{ex.Message}");
                 }
             }
 
-            if (hasValue)
-                results.Add(item);
+            await Task.CompletedTask;
+            return (successItems, errorMessages);
         }
 
-        return results;
-    }
+        /// <summary>
+        /// 获取属性显示名称
+        /// </summary>
+        private static string GetDisplayName(PropertyInfo property)
+        {
+            var displayAttribute = property.GetCustomAttribute<DisplayAttribute>();
+            return displayAttribute?.Name ?? property.Name;
+        }
 
-    /// <summary>
-    /// 获取导入模板
-    /// </summary>
-    /// <typeparam name="T">数据类型</typeparam>
-    /// <param name="excelProperties">Excel属性</param>
-    /// <returns>模板字节数组</returns>
-    public static byte[] GetImportTemplate<T>(LeanExcelProperties excelProperties = null) where T : new()
-    {
-        var data = new List<T>();
-        return ExportExcel(data, "Sheet1", excelProperties);
+        #endregion
     }
 } 

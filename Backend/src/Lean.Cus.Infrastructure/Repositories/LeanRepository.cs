@@ -2,196 +2,127 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Lean.Cus.Domain.Repositories;
-using Microsoft.Extensions.Logging;
+using Lean.Cus.Domain.IRepositories;
 using SqlSugar;
 
 namespace Lean.Cus.Infrastructure.Repositories;
 
 /// <summary>
-/// 仓储实现
+/// 通用仓储实现
 /// </summary>
 /// <typeparam name="TEntity">实体类型</typeparam>
 public class LeanRepository<TEntity> : ILeanRepository<TEntity> where TEntity : class, new()
 {
-    /// <summary>
-    /// 数据库上下文
-    /// </summary>
-    protected readonly ISqlSugarClient DbContext;
+    protected readonly ISqlSugarClient _db;
 
-    /// <summary>
-    /// 日志记录器
-    /// </summary>
-    protected readonly ILogger<LeanRepository<TEntity>> Logger;
+    public LeanRepository(ISqlSugarClient db)
+    {
+        _db = db;
+    }
 
     /// <summary>
-    /// 构造函数
+    /// 新增实体
     /// </summary>
-    /// <param name="dbContext">数据库上下文</param>
-    /// <param name="logger">日志记录器</param>
-    public LeanRepository(ISqlSugarClient dbContext, ILogger<LeanRepository<TEntity>> logger)
+    public virtual async Task<int> InsertAsync(TEntity entity)
     {
-        DbContext = dbContext;
-        Logger = logger;
+        return await _db.Insertable(entity).ExecuteCommandAsync();
     }
 
-    /// <inheritdoc/>
-    public ISugarQueryable<TEntity> AsQueryable()
+    /// <summary>
+    /// 批量新增实体
+    /// </summary>
+    public virtual async Task<int> InsertRangeAsync(IEnumerable<TEntity> entities)
     {
-        return DbContext.Queryable<TEntity>();
+        return await _db.Insertable(entities.ToList()).ExecuteCommandAsync();
     }
 
-    /// <inheritdoc/>
-    public async Task<TEntity?> GetByIdAsync(long id)
+    /// <summary>
+    /// 更新实体
+    /// </summary>
+    public virtual async Task<int> UpdateAsync(TEntity entity)
     {
-        try
-        {
-            return await DbContext.Queryable<TEntity>().InSingleAsync(id);
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "根据ID获取实体异常");
-            throw;
-        }
+        return await _db.Updateable(entity).ExecuteCommandAsync();
     }
 
-    /// <inheritdoc/>
-    public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression)
+    /// <summary>
+    /// 批量更新实体
+    /// </summary>
+    public virtual async Task<int> UpdateRangeAsync(IEnumerable<TEntity> entities)
     {
-        try
-        {
-            return await DbContext.Queryable<TEntity>().FirstAsync(expression);
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "根据条件获取实体异常");
-            throw;
-        }
+        return await _db.Updateable(entities.ToList()).ExecuteCommandAsync();
     }
 
-    /// <inheritdoc/>
-    public async Task<bool> InsertAsync(TEntity entity)
+    /// <summary>
+    /// 删除实体
+    /// </summary>
+    public virtual async Task<int> DeleteAsync(TEntity entity)
     {
-        try
-        {
-            return await DbContext.Insertable(entity).ExecuteCommandAsync() > 0;
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "新增实体异常");
-            throw;
-        }
+        return await _db.Deleteable(entity).ExecuteCommandAsync();
     }
 
-    /// <inheritdoc/>
-    public async Task<bool> InsertRangeAsync(List<TEntity> entities)
+    /// <summary>
+    /// 批量删除实体
+    /// </summary>
+    public virtual async Task<int> DeleteRangeAsync(IEnumerable<TEntity> entities)
     {
-        try
-        {
-            return await DbContext.Insertable(entities).ExecuteCommandAsync() > 0;
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "批量新增实体异常");
-            throw;
-        }
+        return await _db.Deleteable(entities.ToList()).ExecuteCommandAsync();
     }
 
-    /// <inheritdoc/>
-    public async Task<bool> UpdateAsync(TEntity entity)
+    /// <summary>
+    /// 根据条件删除实体
+    /// </summary>
+    public virtual async Task<int> DeleteAsync(Expression<Func<TEntity, bool>> predicate)
     {
-        try
-        {
-            return await DbContext.Updateable(entity).ExecuteCommandAsync() > 0;
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "更新实体异常");
-            throw;
-        }
+        return await _db.Deleteable<TEntity>().Where(predicate).ExecuteCommandAsync();
     }
 
-    /// <inheritdoc/>
-    public async Task<bool> UpdateRangeAsync(List<TEntity> entities)
+    /// <summary>
+    /// 根据主键获取实体
+    /// </summary>
+    public virtual async Task<TEntity> GetByIdAsync(object id)
     {
-        try
-        {
-            return await DbContext.Updateable(entities).ExecuteCommandAsync() > 0;
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "批量更新实体异常");
-            throw;
-        }
+        return await _db.Queryable<TEntity>().InSingleAsync(id);
     }
 
-    /// <inheritdoc/>
-    public async Task<bool> DeleteAsync(long id)
+    /// <summary>
+    /// 根据条件获取实体
+    /// </summary>
+    public virtual async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate)
     {
-        try
-        {
-            return await DbContext.Deleteable<TEntity>().In(id).ExecuteCommandAsync() > 0;
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "删除实体异常");
-            throw;
-        }
+        return await _db.Queryable<TEntity>().FirstAsync(predicate);
     }
 
-    /// <inheritdoc/>
-    public async Task<bool> DeleteRangeAsync(List<long> ids)
+    /// <summary>
+    /// 获取所有实体
+    /// </summary>
+    public virtual async Task<List<TEntity>> GetListAsync()
     {
-        try
-        {
-            return await DbContext.Deleteable<TEntity>().In(ids).ExecuteCommandAsync() > 0;
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "批量删除实体异常");
-            throw;
-        }
+        return await _db.Queryable<TEntity>().ToListAsync();
     }
 
-    /// <inheritdoc/>
-    public async Task<bool> DeleteAsync(Expression<Func<TEntity, bool>> expression)
+    /// <summary>
+    /// 根据条件获取实体集合
+    /// </summary>
+    public virtual async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> predicate)
     {
-        try
-        {
-            return await DbContext.Deleteable<TEntity>().Where(expression).ExecuteCommandAsync() > 0;
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "根据条件删除实体异常");
-            throw;
-        }
+        return await _db.Queryable<TEntity>().Where(predicate).ToListAsync();
     }
 
-    /// <inheritdoc/>
-    public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression)
+    /// <summary>
+    /// 分页获取实体集合
+    /// </summary>
+    public virtual async Task<List<TEntity>> GetPageListAsync(Expression<Func<TEntity, bool>> predicate, int pageIndex, int pageSize, RefAsync<int> total)
     {
-        try
-        {
-            return await DbContext.Queryable<TEntity>().AnyAsync(expression);
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "根据条件判断是否存在异常");
-            throw;
-        }
+        return await _db.Queryable<TEntity>()
+            .Where(predicate)
+            .ToPageListAsync(pageIndex, pageSize, total);
     }
 
-    /// <inheritdoc/>
-    public async Task<int> CountAsync(Expression<Func<TEntity, bool>> expression)
+    /// <summary>
+    /// 检查是否存在
+    /// </summary>
+    public virtual async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate)
     {
-        try
-        {
-            return await DbContext.Queryable<TEntity>().CountAsync(expression);
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "根据条件获取数量异常");
-            throw;
-        }
+        return await _db.Queryable<TEntity>().AnyAsync(predicate);
     }
 } 

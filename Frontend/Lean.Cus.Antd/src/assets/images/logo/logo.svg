@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="32" viewBox="0 0 128 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M16 0L32 16L16 32L0 16L16 0Z" fill="#1890FF"/>
+  <path d="M16 8L24 16L16 24L8 16L16 8Z" fill="white"/>
+  <text x="40" y="22" fill="#1890FF" font-family="Arial" font-size="20" font-weight="bold">Lean.Cus</text>
+</svg> 

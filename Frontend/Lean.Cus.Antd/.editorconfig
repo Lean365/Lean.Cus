@@ -1,0 +1,38 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# 顶级 EditorConfig 文件
+root = true
+
+# 所有文件
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 100
+
+# Markdown 文件
+[*.md]
+trim_trailing_whitespace = false
+
+# JSON 文件
+[*.json]
+insert_final_newline = false
+
+# YAML 文件
+[*.{yml,yaml}]
+indent_size = 2
+
+# TypeScript 和 JavaScript 文件
+[*.{ts,js,tsx,jsx}]
+quote_type = single
+
+# Vue 文件
+[*.vue]
+quote_type = single
+
+# CSS, LESS, SCSS 文件
+[*.{css,less,scss}]
+quote_type = single 
