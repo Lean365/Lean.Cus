@@ -4,6 +4,7 @@ import { createI18n } from 'vue-i18n'
 
 import App from './App.vue'
 import router from './router'
+import messages from './locales'
 
 // 导入全局样式
 import './assets/styles/index.less'
@@ -20,11 +21,16 @@ app.use(router)
 // 使用国际化
 const i18n = createI18n({
   legacy: false,
-  locale: 'zh-CN',
-  fallbackLocale: 'en',
+  locale: 'zh-CN', // 默认语言
+  fallbackLocale: 'en-US', // 备用语言
   messages: {
-    'zh-CN': {},
-    'en': {}
+    'zh-CN': messages['zh-CN'],
+    'zh-TW': messages['zh-TW'],
+    'en-US': messages['en-US'],
+    'ar-SA': messages['ar-SA'],
+    'fr-FR': messages['fr-FR'],
+    'ru-RU': messages['ru-RU'],
+    'es-ES': messages['es-ES']
   }
 })
 app.use(i18n)
