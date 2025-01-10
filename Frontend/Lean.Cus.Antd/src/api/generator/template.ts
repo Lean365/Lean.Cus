@@ -1,83 +1,37 @@
-import { http } from '@/utils/http'
+import { request } from '@/utils/request'
 
-/**
- * 模板DTO
- */
-export interface LeanTemplateDto {
-  /**
-   * 编号
-   */
-  id?: number
-  /**
-   * 模板类型
-   */
-  templateType: string
-  /**
-   * 文件名
-   */
-  fileName: string
-  /**
-   * 模板内容
-   */
-  templateContent: string
-  /**
-   * 备注
-   */
-  remark?: string
+// 模板相关的接口
+export interface Template {
+  id: string
+  name: string
+  description: string
+  content: string
+  type: number
+  createTime: string
+  updateTime: string
 }
 
-/**
- * 创建模板
- * @param dto 模板DTO
- * @returns 创建结果
- */
-export function createTemplate(dto: LeanTemplateDto) {
-  return http.post<boolean>('/api/generator/template', dto)
+// 获取模板列表
+export const getTemplateList = () => {
+  return request.get<Template[]>('/api/LeanTemplate/GetList')
 }
 
-/**
- * 更新模板
- * @param id 模板编号
- * @param dto 模板DTO
- * @returns 更新结果
- */
-export function updateTemplate(id: number, dto: LeanTemplateDto) {
-  return http.put<boolean>(`/api/generator/template/${id}`, dto)
+// 获取单个模板
+export const getTemplate = (id: string) => {
+  return request.get<Template>(`/api/LeanTemplate/Get/${id}`)
 }
 
-/**
- * 删除模板
- * @param id 模板编号
- * @returns 删除结果
- */
-export function deleteTemplate(id: number) {
-  return http.delete<boolean>(`/api/generator/template/${id}`)
+// 创建模板
+export const createTemplate = (data: Partial<Template>) => {
+  return request.post<Template>('/api/LeanTemplate/Create', data)
 }
 
-/**
- * 获取模板
- * @param id 模板编号
- * @returns 模板DTO
- */
-export function getTemplate(id: number) {
-  return http.get<LeanTemplateDto>(`/api/generator/template/${id}`)
+// 更新模板
+export const updateTemplate = (data: Partial<Template>) => {
+  return request.put<Template>('/api/LeanTemplate/Update', data)
 }
 
-/**
- * 获取模板列表
- * @param templateType 模板类型
- * @returns 模板DTO列表
- */
-export function getTemplateList(templateType?: string) {
-  return http.get<LeanTemplateDto[]>('/api/generator/template', { params: { templateType } })
-}
-
-/**
- * 预览模板
- * @param id 模板编号
- * @param tableId 表编号
- * @returns 预览结果
- */
-export function previewTemplate(id: number, tableId: number) {
-  return http.get<string>(`/api/generator/template/${id}/preview`, { params: { tableId } })
+// 删除模板
+export const deleteTemplate = (id: string) => {
+  return request.delete<void>(`/api/LeanTemplate/Delete/${id}`)
 } 

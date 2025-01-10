@@ -1,4 +1,4 @@
-import { http } from '@/utils/http'
+import { request } from '@/utils/request'
 
 /**
  * 预览代码
@@ -6,7 +6,7 @@ import { http } from '@/utils/http'
  * @returns 预览结果
  */
 export function previewCode(tableId: number) {
-  return http.get<Record<string, string>>(`/api/generator/preview/${tableId}`)
+  return request.get<Record<string, string>>(`/api/generator/preview/${tableId}`)
 }
 
 /**
@@ -16,7 +16,7 @@ export function previewCode(tableId: number) {
  * @returns 生成结果
  */
 export function generateCode(tableId: number, generatePath: string) {
-  return http.post<boolean>(`/api/generator/generate/${tableId}`, null, { params: { generatePath } })
+  return request.post<boolean>(`/api/generator/generate/${tableId}`, null, { params: { generatePath } })
 }
 
 /**
@@ -25,5 +25,5 @@ export function generateCode(tableId: number, generatePath: string) {
  * @returns 代码压缩包
  */
 export function downloadCode(tableId: number) {
-  return http.get(`/api/generator/download/${tableId}`, { responseType: 'blob' })
+  return request.get(`/api/generator/download/${tableId}`, { responseType: 'blob' })
 } 
