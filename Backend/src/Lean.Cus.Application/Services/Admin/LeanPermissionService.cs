@@ -1,17 +1,11 @@
-using Lean.Cus.Domain.Entities.Admin;
-using Lean.Cus.Domain.IRepositories;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Lean.Cus.Application.Dtos.Admin;
+using Lean.Cus.Application.Interfaces.Admin;
 using Lean.Cus.Common.Excel;
 using Lean.Cus.Common.Paging;
-using System.IO;
-using Lean.Cus.Application.Interfaces.Admin;
-using Lean.Cus.Application.Dtos.Admin;
+using Lean.Cus.Domain.Entities.Admin;
+using Lean.Cus.Domain.IRepositories;
 using Mapster;
 using SqlSugar;
-using System;
-using System.Linq;
-using Lean.Cus.Common.Enums;
 
 namespace Lean.Cus.Application.Services.Admin;
 
@@ -72,8 +66,8 @@ public class LeanPermissionService : ILeanPermissionService
     public async Task<List<LeanPermissionDto>> GetListAsync(LeanPermissionQueryDto query)
     {
         var permissions = await _permissionRepository.GetListAsync(p =>
-            (string.IsNullOrEmpty(query.PermissionName) || p.Name.Contains(query.PermissionName)) &&
-            (string.IsNullOrEmpty(query.PermissionCode) || p.Code.Contains(query.PermissionCode)) &&
+            (string.IsNullOrEmpty(query.PermissionName) || p.PermissionName.Contains(query.PermissionName)) &&
+            (string.IsNullOrEmpty(query.PermissionCode) || p.PermissionCode.Contains(query.PermissionCode)) &&
             (!query.Status.HasValue || p.Status == query.Status.Value));
         return permissions.Adapt<List<LeanPermissionDto>>();
     }
@@ -85,8 +79,8 @@ public class LeanPermissionService : ILeanPermissionService
     {
         RefAsync<int> total = 0;
         var list = await _permissionRepository.GetPageListAsync(p =>
-            (string.IsNullOrEmpty(query.PermissionName) || p.Name.Contains(query.PermissionName)) &&
-            (string.IsNullOrEmpty(query.PermissionCode) || p.Code.Contains(query.PermissionCode)) &&
+            (string.IsNullOrEmpty(query.PermissionName) || p.PermissionName.Contains(query.PermissionName)) &&
+            (string.IsNullOrEmpty(query.PermissionCode) || p.PermissionCode.Contains(query.PermissionCode)) &&
             (!query.Status.HasValue || p.Status == query.Status.Value) &&
             (!query.CreatedTimeStart.HasValue || p.CreateTime >= query.CreatedTimeStart.Value) &&
             (!query.CreatedTimeEnd.HasValue || p.CreateTime <= query.CreatedTimeEnd.Value),
@@ -124,8 +118,8 @@ public class LeanPermissionService : ILeanPermissionService
     public async Task<byte[]> ExportAsync(LeanPermissionQueryDto query)
     {
         var list = await _permissionRepository.GetListAsync(p =>
-            (string.IsNullOrEmpty(query.PermissionName) || p.Name.Contains(query.PermissionName)) &&
-            (string.IsNullOrEmpty(query.PermissionCode) || p.Code.Contains(query.PermissionCode)) &&
+            (string.IsNullOrEmpty(query.PermissionName) || p.PermissionName.Contains(query.PermissionName)) &&
+            (string.IsNullOrEmpty(query.PermissionCode) || p.PermissionCode.Contains(query.PermissionCode)) &&
             (!query.Status.HasValue || p.Status == query.Status.Value));
         return await LeanExcelHelper.ExportAsync(list);
     }
@@ -145,7 +139,7 @@ public class LeanPermissionService : ILeanPermissionService
     {
         // 需要实现用户-角色-权限关联查询
         var permissions = await _permissionRepository.GetListAsync(p => p.Id > 0);
-        return permissions.Select(p => p.Code).ToList();
+        return permissions.Select(p => p.PermissionCode).ToList();
     }
 
     /// <summary>
@@ -155,6 +149,6 @@ public class LeanPermissionService : ILeanPermissionService
     {
         // 需要实现角色-权限关联查询
         var permissions = await _permissionRepository.GetListAsync(p => p.Id > 0);
-        return permissions.Select(p => p.Code).ToList();
+        return permissions.Select(p => p.PermissionCode).ToList();
     }
-} 
+}

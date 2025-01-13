@@ -62,9 +62,9 @@ public class LeanPositionDto
     public LeanPositionType PositionType { get; set; }
 
     /// <summary>
-    /// 排序
+    /// 排序号
     /// </summary>
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态
@@ -116,7 +116,7 @@ public class LeanPositionCreateDto
     /// 排序
     /// </summary>
     [Required(ErrorMessage = "排序不能为空")]
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态
@@ -190,7 +190,7 @@ public class LeanPositionImportDto
     /// 排序
     /// </summary>
     [Required(ErrorMessage = "排序不能为空")]
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态
@@ -228,7 +228,7 @@ public class LeanPositionExportDto
     /// <summary>
     /// 排序
     /// </summary>
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态名称
@@ -269,7 +269,7 @@ public class LeanPositionImportTemplateDto
     /// <summary>
     /// 排序
     /// </summary>
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态(0：禁用，1：启用)

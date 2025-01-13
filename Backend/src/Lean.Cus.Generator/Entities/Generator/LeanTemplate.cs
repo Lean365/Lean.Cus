@@ -6,7 +6,7 @@ namespace Lean.Cus.Generator.Entities.Generator;
 /// <summary>
 /// 模板实体
 /// </summary>
-[SugarTable("lean_template", "代码生成模板表")]
+[SugarTable("lean_gen_template", "代码生成模板表")]
 public class LeanTemplate : LeanBaseEntity
 {
     /// <summary>

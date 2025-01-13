@@ -1,11 +1,9 @@
 using System.Security.Claims;
-using Microsoft.Extensions.Logging;
-using Lean.Cus.Domain.Security;
-using Lean.Cus.Domain.IRepositories;
+using Lean.Cus.Common.Enums;
 using Lean.Cus.Common.Security;
 using Lean.Cus.Domain.Entities.Admin;
-using System.Linq.Expressions;
-using Lean.Cus.Common.Enums;
+using Lean.Cus.Domain.IRepositories;
+using Microsoft.Extensions.Logging;
 
 namespace Lean.Cus.Infrastructure.Security;
 
@@ -80,7 +78,7 @@ public class LeanPermissionProvider : ILeanPermissionProvider
 
             // 获取权限
             var permissions = await _permissionRepository.GetListAsync(p => permissionIds.Contains(p.Id));
-            return permissions.Where(p => p.Status == LeanStatus.Enabled).Select(p => p.Code);
+            return permissions.Where(p => p.Status == LeanStatus.Enabled).Select(p => p.PermissionCode);
         }
         catch (Exception ex)
         {
@@ -108,7 +106,7 @@ public class LeanPermissionProvider : ILeanPermissionProvider
 
             // 获取权限
             var permissions = await _permissionRepository.GetListAsync(p => permissionIds.Contains(p.Id));
-            return permissions.Where(p => p.Status == LeanStatus.Enabled).Select(p => p.Code);
+            return permissions.Where(p => p.Status == LeanStatus.Enabled).Select(p => p.PermissionCode);
         }
         catch (Exception ex)
         {
@@ -163,4 +161,4 @@ public class LeanPermissionProvider : ILeanPermissionProvider
             return false;
         }
     }
-} 
+}

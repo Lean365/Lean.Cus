@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Lean.Cus.Domain\Lean.Cus.Domain.csproj" />
     <ProjectReference Include="..\Lean.Cus.Common\Lean.Cus.Common.csproj" />
+    <ProjectReference Include="..\Lean.Cus.Generator\Lean.Cus.Generator.csproj" />
     <ProjectReference Include="..\Lean.Cus.Workflow\Lean.Cus.Workflow.csproj" />
   </ItemGroup>
 

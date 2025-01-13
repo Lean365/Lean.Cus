@@ -57,9 +57,9 @@ public class LeanRoleDto
     public string RoleCode { get; set; } = string.Empty;
 
     /// <summary>
-    /// 排序
+    /// 排序号
     /// </summary>
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 数据范围（1：全部数据权限，2：自定义数据权限，3：本部门数据权限，4：本部门及以下数据权限，5：仅本人数据权限）
@@ -110,7 +110,7 @@ public class LeanRoleCreateDto
     /// 排序
     /// </summary>
     [Required(ErrorMessage = "排序不能为空")]
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 数据范围
@@ -184,7 +184,7 @@ public class LeanRoleImportDto
     /// 排序
     /// </summary>
     [Required(ErrorMessage = "排序不能为空")]
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 数据范围
@@ -223,7 +223,7 @@ public class LeanRoleExportDto
     /// <summary>
     /// 排序
     /// </summary>
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 数据范围名称
@@ -264,7 +264,7 @@ public class LeanRoleImportTemplateDto
     /// <summary>
     /// 排序
     /// </summary>
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 数据范围（1：全部数据权限，2：自定义数据权限，3：本部门数据权限，4：本部门及以下数据权限，5：仅本人数据权限）

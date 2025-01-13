@@ -1,16 +1,11 @@
-using Lean.Cus.Domain.Entities.Admin;
-using Lean.Cus.Domain.IRepositories;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Lean.Cus.Application.Dtos.Admin;
+using Lean.Cus.Application.Interfaces.Admin;
 using Lean.Cus.Common.Excel;
 using Lean.Cus.Common.Paging;
-using System.IO;
-using Lean.Cus.Application.Interfaces.Admin;
-using Lean.Cus.Application.Dtos.Admin;
+using Lean.Cus.Domain.Entities.Admin;
+using Lean.Cus.Domain.IRepositories;
 using Mapster;
 using SqlSugar;
-using System;
-using System.Linq;
 
 namespace Lean.Cus.Application.Services.Admin;
 
@@ -71,8 +66,8 @@ public class LeanDepartmentService : ILeanDepartmentService
     public async Task<List<LeanDepartmentDto>> GetListAsync(LeanDepartmentQueryDto query)
     {
         var departments = await _departmentRepository.GetListAsync(d =>
-            (string.IsNullOrEmpty(query.DepartmentName) || d.Name.Contains(query.DepartmentName)) &&
-            (string.IsNullOrEmpty(query.DepartmentCode) || d.Code.Contains(query.DepartmentCode)) &&
+            (string.IsNullOrEmpty(query.DepartmentName) || d.DepartmentName.Contains(query.DepartmentName)) &&
+            (string.IsNullOrEmpty(query.DepartmentCode) || d.DepartmentCode.Contains(query.DepartmentCode)) &&
             (!query.ParentId.HasValue || d.ParentId == query.ParentId.Value) &&
             (!query.Status.HasValue || d.Status == query.Status.Value));
         return departments.Adapt<List<LeanDepartmentDto>>();
@@ -85,8 +80,8 @@ public class LeanDepartmentService : ILeanDepartmentService
     {
         RefAsync<int> total = 0;
         var list = await _departmentRepository.GetPageListAsync(d =>
-            (string.IsNullOrEmpty(query.DepartmentName) || d.Name.Contains(query.DepartmentName)) &&
-            (string.IsNullOrEmpty(query.DepartmentCode) || d.Code.Contains(query.DepartmentCode)) &&
+            (string.IsNullOrEmpty(query.DepartmentName) || d.DepartmentName.Contains(query.DepartmentName)) &&
+            (string.IsNullOrEmpty(query.DepartmentCode) || d.DepartmentCode.Contains(query.DepartmentCode)) &&
             (!query.ParentId.HasValue || d.ParentId == query.ParentId.Value) &&
             (!query.Status.HasValue || d.Status == query.Status.Value) &&
             (!query.CreatedTimeStart.HasValue || d.CreateTime >= query.CreatedTimeStart.Value) &&
@@ -125,8 +120,8 @@ public class LeanDepartmentService : ILeanDepartmentService
     public async Task<byte[]> ExportAsync(LeanDepartmentQueryDto query)
     {
         var list = await _departmentRepository.GetListAsync(d =>
-            (string.IsNullOrEmpty(query.DepartmentName) || d.Name.Contains(query.DepartmentName)) &&
-            (string.IsNullOrEmpty(query.DepartmentCode) || d.Code.Contains(query.DepartmentCode)) &&
+            (string.IsNullOrEmpty(query.DepartmentName) || d.DepartmentName.Contains(query.DepartmentName)) &&
+            (string.IsNullOrEmpty(query.DepartmentCode) || d.DepartmentCode.Contains(query.DepartmentCode)) &&
             (!query.ParentId.HasValue || d.ParentId == query.ParentId.Value) &&
             (!query.Status.HasValue || d.Status == query.Status.Value));
         return await LeanExcelHelper.ExportAsync(list);
@@ -201,4 +196,4 @@ public class LeanDepartmentService : ILeanDepartmentService
             BuildDepartmentTree(child, allDepartments);
         }
     }
-} 
+}

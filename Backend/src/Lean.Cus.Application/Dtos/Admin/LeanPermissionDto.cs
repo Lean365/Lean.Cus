@@ -1,7 +1,6 @@
-using System;
 using System.ComponentModel.DataAnnotations;
-using Lean.Cus.Common.Paging;
 using Lean.Cus.Common.Enums;
+using Lean.Cus.Common.Paging;
 
 namespace Lean.Cus.Application.Dtos.Admin;
 
@@ -77,9 +76,9 @@ public class LeanPermissionDto
     public LeanPermissionType PermissionType { get; set; }
 
     /// <summary>
-    /// 排序
+    /// 排序号
     /// </summary>
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态
@@ -137,7 +136,7 @@ public class LeanPermissionCreateDto
     /// 排序
     /// </summary>
     [Required(ErrorMessage = "排序不能为空")]
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态
@@ -217,7 +216,7 @@ public class LeanPermissionImportDto
     /// 排序
     /// </summary>
     [Required(ErrorMessage = "排序不能为空")]
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态
@@ -260,7 +259,7 @@ public class LeanPermissionExportDto
     /// <summary>
     /// 排序
     /// </summary>
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态名称
@@ -306,7 +305,7 @@ public class LeanPermissionImportTemplateDto
     /// <summary>
     /// 排序
     /// </summary>
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态(0：禁用，1：启用)
@@ -317,4 +316,4 @@ public class LeanPermissionImportTemplateDto
     /// 备注
     /// </summary>
     public string? Remark { get; set; }
-} 
+}

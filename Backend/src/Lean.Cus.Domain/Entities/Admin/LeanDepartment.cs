@@ -25,7 +25,7 @@ namespace Lean.Cus.Domain.Entities.Admin;
 /// 部门实体
 /// </summary>
 [SugarTable("lean_admin_department", "部门表")]
-[SugarIndex("idx_department_code", nameof(Code), OrderByType.Asc, true)]
+[SugarIndex("idx_department_code", nameof(DepartmentCode), OrderByType.Asc, true)]
 public class LeanDepartment : LeanBaseEntity
 {
     /// <summary>
@@ -33,14 +33,14 @@ public class LeanDepartment : LeanBaseEntity
     /// </summary>
     [SugarColumn(ColumnName = "code", ColumnDescription = "部门编码", 
         Length = 50, IsNullable = false, ColumnDataType = "varchar")]
-    public string Code { get; set; } = string.Empty;
+    public string DepartmentCode { get; set; } = string.Empty;
 
     /// <summary>
     /// 部门名称
     /// </summary>
     [SugarColumn(ColumnName = "name", ColumnDescription = "部门名称", 
         Length = 50, IsNullable = false, ColumnDataType = "nvarchar")]
-    public string Name { get; set; } = string.Empty;
+    public string DepartmentName { get; set; } = string.Empty;
 
     /// <summary>
     /// 部门类型（0：公司，1：部门，2：团队）
@@ -78,11 +78,11 @@ public class LeanDepartment : LeanBaseEntity
     public string? Email { get; set; }
 
     /// <summary>
-    /// 排序
+    /// 排序号
     /// </summary>
-    [SugarColumn(ColumnName = "sort", ColumnDescription = "排序", 
+    [SugarColumn(ColumnName = "order_num", ColumnDescription = "排序号", 
         IsNullable = false, ColumnDataType = "int")]
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态（0：禁用，1：启用）

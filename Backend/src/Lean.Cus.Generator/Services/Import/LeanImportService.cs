@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Lean.Cus.Generator.Dtos.Import;
 using Lean.Cus.Generator.Entities.Import;
 using Lean.Cus.Generator.IServices.Import;
@@ -23,6 +19,7 @@ public class LeanImportService : ILeanImportService
     }
 
     #region 表导入
+
     /// <summary>
     /// 获取表导入信息
     /// </summary>
@@ -73,9 +70,11 @@ public class LeanImportService : ILeanImportService
             .Where(x => x.Id == id)
             .ExecuteCommandAsync() > 0;
     }
-    #endregion
+
+    #endregion 表导入
 
     #region 字段导入
+
     /// <summary>
     /// 获取字段导入信息
     /// </summary>
@@ -94,7 +93,7 @@ public class LeanImportService : ILeanImportService
     {
         var list = await _db.Queryable<LeanColumnImport>()
             .Where(x => x.TableId == tableId)
-            .OrderBy(x => x.Sort)
+            .OrderBy(x => x.OrderNum)
             .ToListAsync();
         return list?.Adapt<List<LeanColumnImportDto>>();
     }
@@ -128,9 +127,11 @@ public class LeanImportService : ILeanImportService
             .Where(x => x.Id == id)
             .ExecuteCommandAsync() > 0;
     }
-    #endregion
+
+    #endregion 字段导入
 
     #region 数据库导入
+
     /// <summary>
     /// 获取数据库表列表
     /// </summary>
@@ -188,7 +189,7 @@ public class LeanImportService : ILeanImportService
             DisplayType = "text",
             DictType = "",
             AutoFill = "",
-            Sort = 0
+            OrderNum = 0
         }).ToList();
         return result;
     }
@@ -252,5 +253,6 @@ public class LeanImportService : ILeanImportService
 
         return true;
     }
-    #endregion
-} 
+
+    #endregion 数据库导入
+}

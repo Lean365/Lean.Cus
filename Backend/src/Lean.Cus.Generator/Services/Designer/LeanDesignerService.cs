@@ -19,6 +19,7 @@ namespace Lean.Cus.Generator.Services.Designer
         }
 
         #region 表设计
+
         /// <summary>
         /// 获取表设计信息
         /// </summary>
@@ -79,9 +80,11 @@ namespace Lean.Cus.Generator.Services.Designer
                 .Where(x => x.Id == id)
                 .ExecuteCommandAsync() > 0;
         }
-        #endregion
+
+        #endregion 表设计
 
         #region 字段设计
+
         /// <summary>
         /// 获取字段设计信息
         /// </summary>
@@ -103,7 +106,7 @@ namespace Lean.Cus.Generator.Services.Designer
         {
             var list = await _db.Queryable<LeanColumnDesigner>()
                 .Where(x => x.TableId == tableId)
-                .OrderBy(x => x.Sort)
+                .OrderBy(x => x.OrderNum)
                 .ToListAsync();
             return list?.Adapt<List<LeanColumnDesignerDto>>();
         }
@@ -145,6 +148,7 @@ namespace Lean.Cus.Generator.Services.Designer
                 .Where(x => x.Id == id)
                 .ExecuteCommandAsync() > 0;
         }
-        #endregion
+
+        #endregion 字段设计
     }
-} 
+}

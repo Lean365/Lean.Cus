@@ -30,14 +30,14 @@ public class LeanMenu : LeanBaseEntity
     /// <summary>
     /// 菜单名称
     /// </summary>
-    [SugarColumn(ColumnName = "menu_name", ColumnDescription = "菜单名称", 
+    [SugarColumn(ColumnName = "name", ColumnDescription = "菜单名称", 
         Length = 50, IsNullable = false, ColumnDataType = "nvarchar")]
     public string MenuName { get; set; } = string.Empty;
 
     /// <summary>
     /// 菜单编码
     /// </summary>
-    [SugarColumn(ColumnName = "menu_code", ColumnDescription = "菜单编码", 
+    [SugarColumn(ColumnName = "code", ColumnDescription = "菜单编码", 
         Length = 50, IsNullable = false, ColumnDataType = "varchar")]
     public string MenuCode { get; set; } = string.Empty;
 
@@ -70,9 +70,9 @@ public class LeanMenu : LeanBaseEntity
     public string? Redirect { get; set; }
 
     /// <summary>
-    /// 菜单类型（M目录 C菜单 F按钮）
+    /// 菜单类型（1：目录，2：菜单，3：按钮）
     /// </summary>
-    [SugarColumn(ColumnName = "menu_type", ColumnDescription = "菜单类型（M目录 C菜单 F按钮）", 
+    [SugarColumn(ColumnName = "menu_type", ColumnDescription = "菜单类型（1：目录，2：菜单，3：按钮）", 
         IsNullable = false, ColumnDataType = "int")]
     public LeanMenuType MenuType { get; set; }
 
@@ -91,32 +91,32 @@ public class LeanMenu : LeanBaseEntity
     public string? PermissionCode { get; set; }
 
     /// <summary>
-    /// 排序
+    /// 排序号
     /// </summary>
-    [SugarColumn(ColumnName = "sort", ColumnDescription = "排序", 
+    [SugarColumn(ColumnName = "order_num", ColumnDescription = "排序号", 
         IsNullable = false, ColumnDataType = "int")]
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 是否可见（0隐藏 1显示）
     /// </summary>
     [SugarColumn(ColumnName = "visible", ColumnDescription = "是否可见（0隐藏 1显示）", 
-        IsNullable = false, ColumnDataType = "bit")]
-    public bool Visible { get; set; } = true;
+        IsNullable = false, ColumnDataType = "int")]
+    public int Visible { get; set; } = 0;
 
     /// <summary>
     /// 是否缓存（0不缓存 1缓存）
     /// </summary>
-    [SugarColumn(ColumnName = "keep_alive", ColumnDescription = "是否缓存（0不缓存 1缓存）", 
-        IsNullable = false, ColumnDataType = "bit")]
-    public bool KeepAlive { get; set; } = true;
+    [SugarColumn(ColumnName = "is_cache", ColumnDescription = "是否缓存（0不缓存 1缓存）",
+        IsNullable = false, ColumnDataType = "int")]
+    public int IsCache { get; set; } = 0;
 
     /// <summary>
     /// 是否外链（0否 1是）
     /// </summary>
-    [SugarColumn(ColumnName = "is_frame", ColumnDescription = "是否外链（0否 1是）", 
-        IsNullable = false, ColumnDataType = "bit")]
-    public bool IsFrame { get; set; }
+    [SugarColumn(ColumnName = "is_frame", ColumnDescription = "是否外链（0否 1是）",
+        IsNullable = false, ColumnDataType = "int")]
+    public int IsFrame { get; set; } = 0;
 
     /// <summary>
     /// 状态（0：禁用，1：启用）
@@ -126,16 +126,16 @@ public class LeanMenu : LeanBaseEntity
     public LeanStatus Status { get; set; } = LeanStatus.Enabled;
 
     /// <summary>
+    /// 翻译键
+    /// </summary>
+    [SugarColumn(ColumnName = "trans_key", ColumnDescription = "翻译键",
+        Length = 100, IsNullable = true, ColumnDataType = "varchar")]
+    public string? TransKey { get; set; }
+
+    /// <summary>
     /// 备注
     /// </summary>
     [SugarColumn(ColumnName = "remark", ColumnDescription = "备注", 
         Length = 500, IsNullable = true, ColumnDataType = "nvarchar")]
     public string? Remark { get; set; }
-
-    /// <summary>
-    /// 翻译键
-    /// </summary>
-    [SugarColumn(ColumnName = "trans_key", ColumnDescription = "翻译键", 
-        Length = 100, IsNullable = true, ColumnDataType = "varchar")]
-    public string? TransKey { get; set; }
 } 

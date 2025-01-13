@@ -1,20 +1,13 @@
+using Lean.Cus.Application.Dtos.Admin;
+using Lean.Cus.Application.Interfaces.Admin;
+using Lean.Cus.Common.Excel;
+using Lean.Cus.Common.Exceptions;
+using Lean.Cus.Common.Paging;
+using Lean.Cus.Common.Security;
 using Lean.Cus.Domain.Entities.Admin;
 using Lean.Cus.Domain.IRepositories;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Lean.Cus.Common.Excel;
-using Lean.Cus.Common.Paging;
-using System.IO;
-using Lean.Cus.Application.Interfaces.Admin;
-using Lean.Cus.Application.Dtos.Admin;
 using Mapster;
 using SqlSugar;
-using System;
-using Lean.Cus.Common.Security;
-using Lean.Cus.Common.Exceptions;
-using System.Linq.Expressions;
-using Lean.Cus.Common.Enums;
-using System.Linq;
 
 namespace Lean.Cus.Application.Services.Admin;
 
@@ -43,7 +36,7 @@ public class LeanUserService : ILeanUserService
     public async Task<LeanUserDto> CreateAsync(LeanUserDto userDto)
     {
         var createDto = userDto.Adapt<LeanUserCreateDto>();
-        
+
         // 验证密码强度
         var (isValid, message) = LeanPasswordHelper.ValidatePasswordStrength(createDto.Password);
         if (!isValid)
@@ -176,12 +169,12 @@ public class LeanUserService : ILeanUserService
 
         // 使用密码助手类重置密码
         var (password, salt, encryptedPassword) = LeanPasswordHelper.ResetPassword();
-        
+
         user.Password = encryptedPassword;
         user.Salt = salt;
-        
+
         await _userRepository.UpdateAsync(user);
-        
+
         return password; // 返回明文密码给用户
     }
 
@@ -209,7 +202,7 @@ public class LeanUserService : ILeanUserService
 
         user.Password = encryptedPassword;
         user.Salt = salt;
-        
+
         await _userRepository.UpdateAsync(user);
     }
 
@@ -295,4 +288,4 @@ public class LeanUserService : ILeanUserService
 
         return true;
     }
-} 
+}

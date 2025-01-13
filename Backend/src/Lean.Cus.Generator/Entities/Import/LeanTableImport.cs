@@ -7,7 +7,7 @@ namespace Lean.Cus.Generator.Entities.Import
     /// <summary>
     /// 表导入配置
     /// </summary>
-    [SugarTable("gen_table_import", "代码生成器表导入配置")]
+    [SugarTable("lean_gen_table_import", "代码生成器表导入配置")]
     [SugarIndex("idx_table_name", nameof(TableName), OrderByType.Asc, true)]
     public class LeanTableImport : LeanBaseEntity
     {

@@ -1,8 +1,8 @@
-using System;
+#nullable enable
+
 using System.ComponentModel.DataAnnotations;
-using Lean.Cus.Common.Paging;
 using Lean.Cus.Common.Enums;
-using System.Collections.Generic;
+using Lean.Cus.Common.Paging;
 
 namespace Lean.Cus.Application.Dtos.Admin;
 
@@ -55,12 +55,12 @@ public class LeanDepartmentDto
     /// <summary>
     /// 部门名称
     /// </summary>
-    public string Name { get; set; }
+    public string DepartmentName { get; set; }
 
     /// <summary>
     /// 部门编码
     /// </summary>
-    public string Code { get; set; }
+    public string DepartmentCode { get; set; }
 
     /// <summary>
     /// 父级部门ID
@@ -68,9 +68,9 @@ public class LeanDepartmentDto
     public long? ParentId { get; set; }
 
     /// <summary>
-    /// 排序
+    /// 排序号
     /// </summary>
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 备注
@@ -128,13 +128,13 @@ public class LeanDepartmentCreateDto
     public string? Email { get; set; }
 
     /// <summary>
-    /// 排序
+    /// 排序号
     /// </summary>
-    [Required(ErrorMessage = "排序不能为空")]
-    public int Sort { get; set; }
+    [Required(ErrorMessage = "排序号不能为空")]
+    public int OrderNum { get; set; }
 
     /// <summary>
-    /// 状态
+    /// 状态(0：禁用，1：启用)
     /// </summary>
     [Required(ErrorMessage = "状态不能为空")]
     public LeanStatus Status { get; set; }
@@ -223,13 +223,13 @@ public class LeanDepartmentImportDto
     public string? Email { get; set; }
 
     /// <summary>
-    /// 排序
+    /// 排序号
     /// </summary>
-    [Required(ErrorMessage = "排序不能为空")]
-    public int Sort { get; set; }
+    [Required(ErrorMessage = "排序号不能为空")]
+    public int OrderNum { get; set; }
 
     /// <summary>
-    /// 状态
+    /// 状态(0：禁用，1：启用)
     /// </summary>
     [Required(ErrorMessage = "状态不能为空")]
     public LeanStatus Status { get; set; }
@@ -277,9 +277,9 @@ public class LeanDepartmentExportDto
     public string? Email { get; set; }
 
     /// <summary>
-    /// 排序
+    /// 排序号
     /// </summary>
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态名称
@@ -333,9 +333,9 @@ public class LeanDepartmentImportTemplateDto
     public string? Email { get; set; }
 
     /// <summary>
-    /// 排序
+    /// 排序号
     /// </summary>
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态(0：禁用，1：启用)
@@ -346,4 +346,4 @@ public class LeanDepartmentImportTemplateDto
     /// 备注
     /// </summary>
     public string? Remark { get; set; }
-} 
+}

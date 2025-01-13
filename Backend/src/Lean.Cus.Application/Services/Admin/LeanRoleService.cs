@@ -86,8 +86,8 @@ public class LeanRoleService : ILeanRoleService
     public async Task<List<LeanRoleDto>> GetListAsync(LeanRoleQueryDto query)
     {
         var roles = await _roleRepository.GetListAsync(u =>
-            (string.IsNullOrEmpty(query.RoleName) || u.Name.Contains(query.RoleName)) &&
-            (string.IsNullOrEmpty(query.RoleCode) || u.Code.Contains(query.RoleCode)) &&
+            (string.IsNullOrEmpty(query.RoleName) || u.RoleName.Contains(query.RoleName)) &&
+            (string.IsNullOrEmpty(query.RoleCode) || u.RoleCode.Contains(query.RoleCode)) &&
             (!query.Status.HasValue || u.Status == query.Status.Value) &&
             (!query.CreatedTimeStart.HasValue || u.CreateTime >= query.CreatedTimeStart.Value) &&
             (!query.CreatedTimeEnd.HasValue || u.CreateTime <= query.CreatedTimeEnd.Value));
@@ -102,8 +102,8 @@ public class LeanRoleService : ILeanRoleService
     {
         RefAsync<int> total = 0;
         var list = await _roleRepository.GetPageListAsync(u =>
-            (string.IsNullOrEmpty(query.RoleName) || u.Name.Contains(query.RoleName)) &&
-            (string.IsNullOrEmpty(query.RoleCode) || u.Code.Contains(query.RoleCode)) &&
+            (string.IsNullOrEmpty(query.RoleName) || u.RoleName.Contains(query.RoleName)) &&
+            (string.IsNullOrEmpty(query.RoleCode) || u.RoleCode.Contains(query.RoleCode)) &&
             (!query.Status.HasValue || u.Status == query.Status.Value) &&
             (!query.CreatedTimeStart.HasValue || u.CreateTime >= query.CreatedTimeStart.Value) &&
             (!query.CreatedTimeEnd.HasValue || u.CreateTime <= query.CreatedTimeEnd.Value),

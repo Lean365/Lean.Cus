@@ -7,7 +7,7 @@ namespace Lean.Cus.Domain.Entities.Admin;
 /// 权限实体
 /// </summary>
 [SugarTable("lean_admin_permission", "权限表")]
-[SugarIndex("idx_permission_code", nameof(Code), OrderByType.Asc, true)]
+[SugarIndex("idx_permission_code", nameof(PermissionCode), OrderByType.Asc, true)]
 public class LeanPermission : LeanBaseEntity
 {
     /// <summary>
@@ -15,14 +15,14 @@ public class LeanPermission : LeanBaseEntity
     /// </summary>
     [SugarColumn(ColumnName = "permission_name", ColumnDescription = "权限名称", 
         Length = 50, IsNullable = false, ColumnDataType = "nvarchar")]
-    public string Name { get; set; } = string.Empty;
+    public string PermissionName { get; set; } = string.Empty;
 
     /// <summary>
     /// 权限编码
     /// </summary>
     [SugarColumn(ColumnName = "permission_code", ColumnDescription = "权限编码", 
         Length = 50, IsNullable = false, ColumnDataType = "varchar")]
-    public string Code { get; set; } = string.Empty;
+    public string PermissionCode { get; set; } = string.Empty;
 
     /// <summary>
     /// 权限类型（1：菜单，2：按钮，3：接口）
@@ -39,11 +39,11 @@ public class LeanPermission : LeanBaseEntity
     public long? ParentId { get; set; }
 
     /// <summary>
-    /// 排序
+    /// 排序号
     /// </summary>
-    [SugarColumn(ColumnName = "sort", ColumnDescription = "排序", 
+    [SugarColumn(ColumnName = "order_num", ColumnDescription = "排序号", 
         IsNullable = false, ColumnDataType = "int")]
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 图标

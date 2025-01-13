@@ -7,7 +7,7 @@ namespace Lean.Cus.Generator.Entities.Designer
     /// <summary>
     /// 表设计器
     /// </summary>
-    [SugarTable("gen_table_designer", "代码生成器表设计")]
+    [SugarTable("lean_gen_table_designer", "代码生成器表设计")]
     [SugarIndex("idx_table_name", nameof(TableName), OrderByType.Asc, true)]
     public class LeanTableDesigner : LeanBaseEntity
     {

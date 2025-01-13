@@ -99,8 +99,12 @@ namespace Lean.Cus.Generator.Dtos.Import
         public string AutoFill { get; set; }
 
         /// <summary>
-        /// 排序
+        /// 排序号
         /// </summary>
-        public int Sort { get; set; }
+        public int OrderNum { get; set; }
+
+        /// <summary>
+        /// 备注
+        /// </summary>
     }
 } 

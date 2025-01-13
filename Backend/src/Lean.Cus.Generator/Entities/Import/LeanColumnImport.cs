@@ -7,7 +7,7 @@ namespace Lean.Cus.Generator.Entities.Import
     /// <summary>
     /// 字段导入配置
     /// </summary>
-    [SugarTable("gen_column_import", "代码生成器字段导入配置")]
+    [SugarTable("lean_gen_column_import", "代码生成器字段导入配置")]
     [SugarIndex("idx_column_table_id", nameof(TableId), OrderByType.Asc)]
     [SugarIndex("idx_column_name", nameof(ColumnName), OrderByType.Asc)]
     public class LeanColumnImport : LeanBaseEntity
@@ -131,10 +131,10 @@ namespace Lean.Cus.Generator.Entities.Import
         public string AutoFill { get; set; }
 
         /// <summary>
-        /// 排序
+        /// 排序号
         /// </summary>
-        [SugarColumn(ColumnName = "sort", ColumnDescription = "排序",
+        [SugarColumn(ColumnName = "order_num", ColumnDescription = "排序号",
             IsNullable = false, ColumnDataType = "int")]
-        public int Sort { get; set; }
+        public int OrderNum { get; set; }
     }
 } 

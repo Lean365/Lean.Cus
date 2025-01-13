@@ -25,7 +25,7 @@ namespace Lean.Cus.Domain.Entities.Admin;
 /// 角色实体
 /// </summary>
 [SugarTable("lean_admin_role", "角色表")]
-[SugarIndex("idx_role_code", nameof(Code), OrderByType.Asc, true)]
+[SugarIndex("idx_role_code", nameof(RoleCode), OrderByType.Asc, true)]
 public class LeanRole : LeanBaseEntity
 {
     /// <summary>
@@ -33,14 +33,14 @@ public class LeanRole : LeanBaseEntity
     /// </summary>
     [SugarColumn(ColumnName = "code", ColumnDescription = "角色编码", 
         Length = 50, IsNullable = false, ColumnDataType = "varchar")]
-    public string Code { get; set; } = string.Empty;
+    public string RoleCode { get; set; } = string.Empty;
 
     /// <summary>
     /// 角色名称
     /// </summary>
     [SugarColumn(ColumnName = "name", ColumnDescription = "角色名称", 
         Length = 50, IsNullable = false, ColumnDataType = "nvarchar")]
-    public string Name { get; set; } = string.Empty;
+    public string RoleName { get; set; } = string.Empty;
 
     /// <summary>
     /// 角色类型（0：系统角色，1：业务角色）
@@ -57,11 +57,11 @@ public class LeanRole : LeanBaseEntity
     public LeanDataScope DataScope { get; set; } = LeanDataScope.All;
 
     /// <summary>
-    /// 排序
+    /// 排序号
     /// </summary>
-    [SugarColumn(ColumnName = "sort", ColumnDescription = "排序", 
+    [SugarColumn(ColumnName = "order_num", ColumnDescription = "排序号", 
         IsNullable = false, ColumnDataType = "int")]
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态（0：禁用，1：启用）

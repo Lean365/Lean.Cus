@@ -71,11 +71,11 @@ public class LeanPosition : LeanBaseEntity
     public string? Requirement { get; set; }
 
     /// <summary>
-    /// 排序
+    /// 排序号
     /// </summary>
-    [SugarColumn(ColumnName = "sort", ColumnDescription = "排序", 
+    [SugarColumn(ColumnName = "order_num", ColumnDescription = "排序号", 
         IsNullable = false, ColumnDataType = "int")]
-    public int Sort { get; set; }
+    public int OrderNum { get; set; }
 
     /// <summary>
     /// 状态（0：禁用，1：启用）
