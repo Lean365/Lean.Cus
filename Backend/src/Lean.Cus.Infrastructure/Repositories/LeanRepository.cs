@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Lean.Cus.Domain.IRepositories;
+using Lean.Cus.Common.Paging;
 using SqlSugar;
 
 namespace Lean.Cus.Infrastructure.Repositories;
@@ -124,5 +125,32 @@ public class LeanRepository<TEntity> : ILeanRepository<TEntity> where TEntity : 
     public virtual async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate)
     {
         return await _db.Queryable<TEntity>().AnyAsync(predicate);
+    }
+
+    /// <summary>
+    /// 根据条件获取第一个实体
+    /// </summary>
+    public virtual async Task<TEntity> GetFirstAsync(Expression<Func<TEntity, bool>> predicate)
+    {
+        return await _db.Queryable<TEntity>().FirstAsync(predicate);
+    }
+
+    /// <summary>
+    /// 分页查询实体集合
+    /// </summary>
+    public virtual async Task<PagedResults<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate, PagedQuery query)
+    {
+        RefAsync<int> total = 0;
+        var list = await _db.Queryable<TEntity>()
+            .Where(predicate)
+            .ToPageListAsync(query.PageIndex, query.PageSize, total);
+
+        return new PagedResults<TEntity>
+        {
+            Items = list,
+            Total = total,
+            PageIndex = query.PageIndex,
+            PageSize = query.PageSize
+        };
     }
 } 

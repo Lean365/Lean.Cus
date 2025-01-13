@@ -5,6 +5,7 @@ using Lean.Cus.Domain.IRepositories;
 using Lean.Cus.Common.Security;
 using Lean.Cus.Domain.Entities.Admin;
 using System.Linq.Expressions;
+using Lean.Cus.Common.Enums;
 
 namespace Lean.Cus.Infrastructure.Security;
 
@@ -79,7 +80,7 @@ public class LeanPermissionProvider : ILeanPermissionProvider
 
             // 获取权限
             var permissions = await _permissionRepository.GetListAsync(p => permissionIds.Contains(p.Id));
-            return permissions.Where(p => p.IsEnabled).Select(p => p.Code);
+            return permissions.Where(p => p.Status == LeanStatus.Enabled).Select(p => p.Code);
         }
         catch (Exception ex)
         {
@@ -107,7 +108,7 @@ public class LeanPermissionProvider : ILeanPermissionProvider
 
             // 获取权限
             var permissions = await _permissionRepository.GetListAsync(p => permissionIds.Contains(p.Id));
-            return permissions.Where(p => p.IsEnabled).Select(p => p.Code);
+            return permissions.Where(p => p.Status == LeanStatus.Enabled).Select(p => p.Code);
         }
         catch (Exception ex)
         {

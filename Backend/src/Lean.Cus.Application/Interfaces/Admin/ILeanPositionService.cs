@@ -13,7 +13,7 @@ public interface ILeanPositionService
     /// <summary>
     /// 新增职位
     /// </summary>
-    Task<LeanPositionDto> AddAsync(LeanPositionDto dto);
+    Task<LeanPositionDto> CreateAsync(LeanPositionDto dto);
 
     /// <summary>
     /// 更新职位
@@ -59,4 +59,9 @@ public interface ILeanPositionService
     /// 获取用户职位列表
     /// </summary>
     Task<List<LeanPositionDto>> GetUserPositionsAsync(long userId);
+
+    /// <summary>
+    /// 更新职位状态
+    /// </summary>
+    Task<bool> UpdateStatusAsync(LeanPositionStatusUpdateDto input);
 } 

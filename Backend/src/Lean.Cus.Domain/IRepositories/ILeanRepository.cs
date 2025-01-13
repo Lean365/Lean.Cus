@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using SqlSugar;
+using Lean.Cus.Common.Paging;
 
 namespace Lean.Cus.Domain.IRepositories;
 
@@ -104,4 +105,19 @@ public interface ILeanRepository<TEntity> where TEntity : class
     /// <param name="predicate">条件表达式</param>
     /// <returns>是否存在</returns>
     Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate);
+
+    /// <summary>
+    /// 根据条件获取第一个实体
+    /// </summary>
+    /// <param name="predicate">条件表达式</param>
+    /// <returns>实体</returns>
+    Task<TEntity> GetFirstAsync(Expression<Func<TEntity, bool>> predicate);
+
+    /// <summary>
+    /// 分页查询实体集合
+    /// </summary>
+    /// <param name="predicate">条件表达式</param>
+    /// <param name="query">分页查询参数</param>
+    /// <returns>分页结果</returns>
+    Task<PagedResults<TEntity>> GetPagedListAsync(Expression<Func<TEntity, bool>> predicate, PagedQuery query);
 } 

@@ -1,6 +1,8 @@
 using Lean.Cus.Workflow.Dtos.Instance;
 using Lean.Cus.Workflow.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using Lean.Cus.Common.Models;
 
 namespace Lean.Cus.Api.Controllers.Workflow;
 
@@ -28,9 +30,10 @@ public class LeanWorkflowInstanceController : ControllerBase
     /// <param name="dto">流程实例信息</param>
     /// <returns>流程实例ID</returns>
     [HttpPost]
-    public Task<long> StartAsync([FromBody] LeanWorkflowInstanceDto dto)
+    public async Task<ActionResult<LeanApiResult<long>>> StartAsync([FromBody] LeanWorkflowInstanceDto dto)
     {
-        return _service.StartAsync(dto);
+        var result = await _service.StartAsync(dto);
+        return Ok(LeanApiResult<long>.Ok(result));
     }
 
     /// <summary>
@@ -39,9 +42,10 @@ public class LeanWorkflowInstanceController : ControllerBase
     /// <param name="id">流程实例ID</param>
     /// <param name="reason">终止原因</param>
     [HttpPost("{id}/terminate")]
-    public Task TerminateAsync(long id, [FromBody] string reason)
+    public async Task<ActionResult<LeanApiResult>> TerminateAsync(long id, [FromBody] string reason)
     {
-        return _service.TerminateAsync(id, reason);
+        await _service.TerminateAsync(id, reason);
+        return Ok(LeanApiResult.Ok("终止成功"));
     }
 
     /// <summary>
@@ -70,9 +74,10 @@ public class LeanWorkflowInstanceController : ControllerBase
     /// <param name="id">流程实例ID</param>
     /// <returns>流程实例信息</returns>
     [HttpGet("{id}")]
-    public Task<LeanWorkflowInstanceDto> GetAsync(long id)
+    public async Task<ActionResult<LeanApiResult<LeanWorkflowInstanceDto>>> GetAsync(long id)
     {
-        return _service.GetAsync(id);
+        var result = await _service.GetAsync(id);
+        return Ok(LeanApiResult<LeanWorkflowInstanceDto>.Ok(result));
     }
 
     /// <summary>
@@ -80,9 +85,10 @@ public class LeanWorkflowInstanceController : ControllerBase
     /// </summary>
     /// <returns>流程实例列表</returns>
     [HttpGet]
-    public Task<List<LeanWorkflowInstanceDto>> GetListAsync()
+    public async Task<ActionResult<LeanApiResult<List<LeanWorkflowInstanceDto>>>> GetListAsync()
     {
-        return _service.GetListAsync();
+        var result = await _service.GetListAsync();
+        return Ok(LeanApiResult<List<LeanWorkflowInstanceDto>>.Ok(result));
     }
 
     /// <summary>

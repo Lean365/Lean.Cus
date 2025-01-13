@@ -66,6 +66,27 @@ public class LeanSqlLog : LeanBaseEntity
     public string? Parameters { get; set; }
 
     /// <summary>
+    /// 变更前数据
+    /// </summary>
+    [SugarColumn(ColumnName = "before_data", ColumnDescription = "变更前数据", 
+        Length = 4000, IsNullable = true, ColumnDataType = "nvarchar")]
+    public string? BeforeData { get; set; }
+
+    /// <summary>
+    /// 变更后数据
+    /// </summary>
+    [SugarColumn(ColumnName = "after_data", ColumnDescription = "变更后数据", 
+        Length = 4000, IsNullable = true, ColumnDataType = "nvarchar")]
+    public string? AfterData { get; set; }
+
+    /// <summary>
+    /// 变更字段
+    /// </summary>
+    [SugarColumn(ColumnName = "changed_fields", ColumnDescription = "变更字段", 
+        Length = 4000, IsNullable = true, ColumnDataType = "nvarchar")]
+    public string? ChangedFields { get; set; }
+
+    /// <summary>
     /// 影响行数
     /// </summary>
     [SugarColumn(ColumnName = "affected_rows", ColumnDescription = "影响行数", 

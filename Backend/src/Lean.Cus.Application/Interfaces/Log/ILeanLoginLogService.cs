@@ -13,12 +13,7 @@ public interface ILeanLoginLogService
     /// <summary>
     /// 新增登录日志
     /// </summary>
-    Task<LeanLoginLogDto> AddAsync(LeanLoginLogDto dto);
-
-    /// <summary>
-    /// 更新登录日志
-    /// </summary>
-    Task<bool> UpdateAsync(LeanLoginLogDto dto);
+    Task<LeanLoginLogDto> CreateAsync(LeanLoginLogDto dto);
 
     /// <summary>
     /// 删除登录日志
@@ -41,19 +36,9 @@ public interface ILeanLoginLogService
     Task<PagedResults<LeanLoginLogDto>> GetPagedListAsync(LeanLoginLogQueryDto query);
 
     /// <summary>
-    /// 导入登录日志数据
-    /// </summary>
-    Task<(List<LeanLoginLogDto> SuccessItems, List<string> ErrorMessages)> ImportAsync(byte[] fileBytes);
-
-    /// <summary>
     /// 导出登录日志数据
     /// </summary>
     Task<byte[]> ExportAsync(LeanLoginLogQueryDto query);
-
-    /// <summary>
-    /// 获取导入模板
-    /// </summary>
-    Task<byte[]> GetImportTemplateAsync();
 
     /// <summary>
     /// 清空登录日志

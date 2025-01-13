@@ -1,6 +1,9 @@
 using Lean.Cus.Workflow.Dtos.Definition;
 using Lean.Cus.Workflow.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Lean.Cus.Common.Models;
 
 namespace Lean.Cus.Api.Controllers.Workflow;
 
@@ -28,9 +31,10 @@ public class LeanWorkflowDefinitionController : ControllerBase
     /// <param name="dto">流程定义信息</param>
     /// <returns>流程定义ID</returns>
     [HttpPost]
-    public Task<long> CreateAsync([FromBody] LeanWorkflowDefinitionDto dto)
+    public async Task<ActionResult<LeanApiResult<long>>> CreateAsync([FromBody] LeanWorkflowDefinitionDto dto)
     {
-        return _service.CreateAsync(dto);
+        var result = await _service.CreateAsync(dto);
+        return Ok(LeanApiResult<long>.Ok(result));
     }
 
     /// <summary>
@@ -38,9 +42,10 @@ public class LeanWorkflowDefinitionController : ControllerBase
     /// </summary>
     /// <param name="dto">流程定义信息</param>
     [HttpPut]
-    public Task UpdateAsync([FromBody] LeanWorkflowDefinitionDto dto)
+    public async Task<ActionResult<LeanApiResult>> UpdateAsync([FromBody] LeanWorkflowDefinitionDto dto)
     {
-        return _service.UpdateAsync(dto);
+        await _service.UpdateAsync(dto);
+        return Ok(LeanApiResult.Ok("更新成功"));
     }
 
     /// <summary>
@@ -48,9 +53,10 @@ public class LeanWorkflowDefinitionController : ControllerBase
     /// </summary>
     /// <param name="id">流程定义ID</param>
     [HttpDelete("{id}")]
-    public Task DeleteAsync(long id)
+    public async Task<ActionResult<LeanApiResult>> DeleteAsync(long id)
     {
-        return _service.DeleteAsync(id);
+        await _service.DeleteAsync(id);
+        return Ok(LeanApiResult.Ok("删除成功"));
     }
 
     /// <summary>
@@ -59,9 +65,10 @@ public class LeanWorkflowDefinitionController : ControllerBase
     /// <param name="id">流程定义ID</param>
     /// <returns>流程定义信息</returns>
     [HttpGet("{id}")]
-    public Task<LeanWorkflowDefinitionDto> GetAsync(long id)
+    public async Task<ActionResult<LeanApiResult<LeanWorkflowDefinitionDto>>> GetAsync(long id)
     {
-        return _service.GetAsync(id);
+        var result = await _service.GetAsync(id);
+        return Ok(LeanApiResult<LeanWorkflowDefinitionDto>.Ok(result));
     }
 
     /// <summary>
@@ -69,9 +76,10 @@ public class LeanWorkflowDefinitionController : ControllerBase
     /// </summary>
     /// <returns>流程定义列表</returns>
     [HttpGet]
-    public Task<List<LeanWorkflowDefinitionDto>> GetListAsync()
+    public async Task<ActionResult<LeanApiResult<List<LeanWorkflowDefinitionDto>>>> GetListAsync()
     {
-        return _service.GetListAsync();
+        var result = await _service.GetListAsync();
+        return Ok(LeanApiResult<List<LeanWorkflowDefinitionDto>>.Ok(result));
     }
 
     /// <summary>
@@ -79,9 +87,10 @@ public class LeanWorkflowDefinitionController : ControllerBase
     /// </summary>
     /// <param name="id">流程定义ID</param>
     [HttpPost("{id}/publish")]
-    public Task PublishAsync(long id)
+    public async Task<ActionResult<LeanApiResult>> PublishAsync(long id)
     {
-        return _service.PublishAsync(id);
+        await _service.PublishAsync(id);
+        return Ok(LeanApiResult.Ok("发布成功"));
     }
 
     /// <summary>
@@ -89,8 +98,9 @@ public class LeanWorkflowDefinitionController : ControllerBase
     /// </summary>
     /// <param name="id">流程定义ID</param>
     [HttpPost("{id}/disable")]
-    public Task DisableAsync(long id)
+    public async Task<ActionResult<LeanApiResult>> DisableAsync(long id)
     {
-        return _service.DisableAsync(id);
+        await _service.DisableAsync(id);
+        return Ok(LeanApiResult.Ok("停用成功"));
     }
 } 

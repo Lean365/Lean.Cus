@@ -33,7 +33,7 @@ public class LeanPermissionService : ILeanPermissionService
     /// <summary>
     /// 新增权限
     /// </summary>
-    public async Task<LeanPermissionDto> AddAsync(LeanPermissionDto dto)
+    public async Task<LeanPermissionDto> CreateAsync(LeanPermissionDto dto)
     {
         var permission = dto.Adapt<LeanPermission>();
         await _permissionRepository.InsertAsync(permission);
@@ -74,7 +74,7 @@ public class LeanPermissionService : ILeanPermissionService
         var permissions = await _permissionRepository.GetListAsync(p =>
             (string.IsNullOrEmpty(query.PermissionName) || p.Name.Contains(query.PermissionName)) &&
             (string.IsNullOrEmpty(query.PermissionCode) || p.Code.Contains(query.PermissionCode)) &&
-            (!query.Status.HasValue || p.IsEnabled == (query.Status.Value == LeanStatus.Enabled)));
+            (!query.Status.HasValue || p.Status == query.Status.Value));
         return permissions.Adapt<List<LeanPermissionDto>>();
     }
 
@@ -87,9 +87,9 @@ public class LeanPermissionService : ILeanPermissionService
         var list = await _permissionRepository.GetPageListAsync(p =>
             (string.IsNullOrEmpty(query.PermissionName) || p.Name.Contains(query.PermissionName)) &&
             (string.IsNullOrEmpty(query.PermissionCode) || p.Code.Contains(query.PermissionCode)) &&
-            (!query.Status.HasValue || p.IsEnabled == (query.Status.Value == LeanStatus.Enabled)) &&
-            (!query.CreatedTimeStart.HasValue || p.CreatedTime >= query.CreatedTimeStart.Value) &&
-            (!query.CreatedTimeEnd.HasValue || p.CreatedTime <= query.CreatedTimeEnd.Value),
+            (!query.Status.HasValue || p.Status == query.Status.Value) &&
+            (!query.CreatedTimeStart.HasValue || p.CreateTime >= query.CreatedTimeStart.Value) &&
+            (!query.CreatedTimeEnd.HasValue || p.CreateTime <= query.CreatedTimeEnd.Value),
             query.PageIndex,
             query.PageSize,
             total);
@@ -126,7 +126,7 @@ public class LeanPermissionService : ILeanPermissionService
         var list = await _permissionRepository.GetListAsync(p =>
             (string.IsNullOrEmpty(query.PermissionName) || p.Name.Contains(query.PermissionName)) &&
             (string.IsNullOrEmpty(query.PermissionCode) || p.Code.Contains(query.PermissionCode)) &&
-            (!query.Status.HasValue || p.IsEnabled == (query.Status.Value == LeanStatus.Enabled)));
+            (!query.Status.HasValue || p.Status == query.Status.Value));
         return await LeanExcelHelper.ExportAsync(list);
     }
 

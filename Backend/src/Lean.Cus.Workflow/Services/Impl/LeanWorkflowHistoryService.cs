@@ -22,7 +22,7 @@ public class LeanWorkflowHistoryService : ILeanWorkflowHistoryService
     /// </summary>
     /// <param name="dto">历史记录信息</param>
     /// <returns>历史记录ID</returns>
-    public async Task<long> AddAsync(LeanWorkflowHistoryDto dto)
+    public async Task<long> CreateAsync(LeanWorkflowHistoryDto dto)
     {
         var entity = dto.Adapt<LeanWorkflowHistory>();
         entity.OperationTime = DateTime.Now;

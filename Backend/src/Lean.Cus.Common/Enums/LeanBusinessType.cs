@@ -17,7 +17,7 @@ public enum LeanBusinessType
     /// 新增
     /// </summary>
     [Description("新增")]
-    Insert = 1,
+    Create = 1,
 
     /// <summary>
     /// 修改

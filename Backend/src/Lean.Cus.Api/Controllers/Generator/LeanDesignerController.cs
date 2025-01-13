@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Lean.Cus.Generator.Dtos.Designer;
 using Lean.Cus.Generator.IServices.Designer;
 using Microsoft.AspNetCore.Mvc;
+using Lean.Cus.Common.Models;
 
 namespace Lean.Cus.Api.Controllers.Generator;
 
@@ -30,9 +31,10 @@ public class LeanDesignerController : ControllerBase
     /// <param name="dto">表设计DTO</param>
     /// <returns>创建结果</returns>
     [HttpPost("table")]
-    public async Task<bool> CreateTable([FromBody] LeanTableDesignerDto dto)
+    public async Task<ActionResult<LeanApiResult>> CreateTable([FromBody] LeanTableDesignerDto dto)
     {
-        return await _designerService.CreateTableAsync(dto);
+        var result = await _designerService.CreateTableAsync(dto);
+        return Ok(result ? LeanApiResult.Ok("创建成功") : LeanApiResult.Fail("创建失败"));
     }
 
     /// <summary>
@@ -42,9 +44,10 @@ public class LeanDesignerController : ControllerBase
     /// <param name="dto">表设计DTO</param>
     /// <returns>更新结果</returns>
     [HttpPut("table/{id}")]
-    public async Task<bool> UpdateTable([FromRoute] long id, [FromBody] LeanTableDesignerDto dto)
+    public async Task<ActionResult<LeanApiResult>> UpdateTable(long id, [FromBody] LeanTableDesignerDto dto)
     {
-        return await _designerService.UpdateTableAsync(id, dto);
+        var result = await _designerService.UpdateTableAsync(id, dto);
+        return Ok(result ? LeanApiResult.Ok("更新成功") : LeanApiResult.Fail("更新失败"));
     }
 
     /// <summary>
@@ -53,9 +56,10 @@ public class LeanDesignerController : ControllerBase
     /// <param name="id">表编号</param>
     /// <returns>删除结果</returns>
     [HttpDelete("table/{id}")]
-    public async Task<bool> DeleteTable([FromRoute] long id)
+    public async Task<ActionResult<LeanApiResult>> DeleteTable(long id)
     {
-        return await _designerService.DeleteTableAsync(id);
+        var result = await _designerService.DeleteTableAsync(id);
+        return Ok(result ? LeanApiResult.Ok("删除成功") : LeanApiResult.Fail("删除失败"));
     }
 
     /// <summary>
@@ -64,19 +68,21 @@ public class LeanDesignerController : ControllerBase
     /// <param name="id">表编号</param>
     /// <returns>表设计DTO</returns>
     [HttpGet("table/{id}")]
-    public async Task<LeanTableDesignerDto> GetTable([FromRoute] long id)
+    public async Task<ActionResult<LeanApiResult<LeanTableDesignerDto>>> GetTable(long id)
     {
-        return await _designerService.GetTableAsync(id);
+        var result = await _designerService.GetTableAsync(id);
+        return Ok(LeanApiResult<LeanTableDesignerDto>.Ok(result));
     }
 
     /// <summary>
     /// 获取表设计列表
     /// </summary>
-    /// <returns>表设计列表</returns>
-    [HttpGet("table/list")]
-    public async Task<List<LeanTableDesignerDto>> GetTableList()
+    /// <returns>表设计DTO列表</returns>
+    [HttpGet("table")]
+    public async Task<ActionResult<LeanApiResult<List<LeanTableDesignerDto>>>> GetTableList()
     {
-        return await _designerService.GetTableListAsync();
+        var result = await _designerService.GetTableListAsync();
+        return Ok(LeanApiResult<List<LeanTableDesignerDto>>.Ok(result));
     }
 
     /// <summary>

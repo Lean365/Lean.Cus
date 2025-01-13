@@ -97,4 +97,16 @@ public class LeanUser : LeanBaseEntity
     [SugarColumn(ColumnName = "remark", ColumnDescription = "备注", 
         Length = 500, IsNullable = true, ColumnDataType = "nvarchar")]
     public string? Remark { get; set; }
+
+    /// <summary>
+    /// 用户扩展信息
+    /// </summary>
+    [Navigate(NavigateType.OneToOne, nameof(Id), nameof(LeanUserExtend.UserId))]
+    public LeanUserExtend UserExtend { get; set; }
+
+    /// <summary>
+    /// 用户设备列表
+    /// </summary>
+    [Navigate(NavigateType.OneToMany, nameof(Id), nameof(LeanDevicesExtend.UserId))]
+    public List<LeanDevicesExtend> UserDevices { get; set; }
 } 

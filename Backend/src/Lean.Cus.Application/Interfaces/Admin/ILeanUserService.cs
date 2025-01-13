@@ -13,7 +13,7 @@ public interface ILeanUserService
     /// <summary>
     /// 新增用户
     /// </summary>
-    Task<LeanUserDto> AddAsync(LeanUserDto dto);
+    Task<LeanUserDto> CreateAsync(LeanUserDto dto);
 
     /// <summary>
     /// 更新用户
@@ -69,4 +69,19 @@ public interface ILeanUserService
     /// 验证用户凭证
     /// </summary>
     Task<bool> ValidateCredentialsAsync(string username, string password);
+
+    /// <summary>
+    /// 分配角色
+    /// </summary>
+    Task<bool> AssignRolesAsync(long userId, List<long> roleIds);
+
+    /// <summary>
+    /// 分配部门
+    /// </summary>
+    Task<bool> AssignDepartmentsAsync(long userId, List<long> departmentIds);
+
+    /// <summary>
+    /// 更新用户状态
+    /// </summary>
+    Task<bool> UpdateStatusAsync(LeanUserStatusUpdateDto input);
 } 

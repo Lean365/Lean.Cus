@@ -13,7 +13,7 @@ public interface ILeanDepartmentService
     /// <summary>
     /// 新增部门
     /// </summary>
-    Task<LeanDepartmentDto> AddAsync(LeanDepartmentDto dto);
+    Task<LeanDepartmentDto> CreateAsync(LeanDepartmentDto dto);
 
     /// <summary>
     /// 更新部门
@@ -69,4 +69,9 @@ public interface ILeanDepartmentService
     /// 获取部门树
     /// </summary>
     Task<List<LeanDepartmentDto>> GetDepartmentTreeAsync();
+
+    /// <summary>
+    /// 更新部门状态
+    /// </summary>
+    Task<bool> UpdateStatusAsync(LeanDepartmentStatusUpdateDto input);
 } 

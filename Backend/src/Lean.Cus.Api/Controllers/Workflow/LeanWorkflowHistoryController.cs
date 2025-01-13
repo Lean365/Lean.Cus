@@ -1,6 +1,9 @@
 using Lean.Cus.Workflow.Dtos.History;
 using Lean.Cus.Workflow.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Lean.Cus.Common.Models;
 
 namespace Lean.Cus.Api.Controllers.Workflow;
 
@@ -28,9 +31,10 @@ public class LeanWorkflowHistoryController : ControllerBase
     /// <param name="dto">历史记录信息</param>
     /// <returns>历史记录ID</returns>
     [HttpPost]
-    public Task<long> AddAsync([FromBody] LeanWorkflowHistoryDto dto)
+    public async Task<ActionResult<LeanApiResult<long>>> CreateAsync([FromBody] LeanWorkflowHistoryDto dto)
     {
-        return _service.AddAsync(dto);
+        var result = await _service.CreateAsync(dto);
+        return Ok(LeanApiResult<long>.Ok(result));
     }
 
     /// <summary>
@@ -39,9 +43,10 @@ public class LeanWorkflowHistoryController : ControllerBase
     /// <param name="id">历史记录ID</param>
     /// <returns>历史记录信息</returns>
     [HttpGet("{id}")]
-    public Task<LeanWorkflowHistoryDto> GetAsync(long id)
+    public async Task<ActionResult<LeanApiResult<LeanWorkflowHistoryDto>>> GetAsync(long id)
     {
-        return _service.GetAsync(id);
+        var result = await _service.GetAsync(id);
+        return Ok(LeanApiResult<LeanWorkflowHistoryDto>.Ok(result));
     }
 
     /// <summary>
@@ -50,8 +55,9 @@ public class LeanWorkflowHistoryController : ControllerBase
     /// <param name="instanceId">流程实例ID</param>
     /// <returns>历史记录列表</returns>
     [HttpGet("instance/{instanceId}")]
-    public Task<List<LeanWorkflowHistoryDto>> GetListByInstanceAsync(long instanceId)
+    public async Task<ActionResult<LeanApiResult<List<LeanWorkflowHistoryDto>>>> GetListByInstanceAsync(long instanceId)
     {
-        return _service.GetListByInstanceAsync(instanceId);
+        var result = await _service.GetListByInstanceAsync(instanceId);
+        return Ok(LeanApiResult<List<LeanWorkflowHistoryDto>>.Ok(result));
     }
 } 

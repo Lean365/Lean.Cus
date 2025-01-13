@@ -135,6 +135,21 @@ public class LeanSqlLogDto
     /// 创建时间
     /// </summary>
     public DateTime CreateTime { get; set; }
+
+    /// <summary>
+    /// 变更前数据
+    /// </summary>
+    public string? BeforeData { get; set; }
+
+    /// <summary>
+    /// 变更后数据
+    /// </summary>
+    public string? AfterData { get; set; }
+
+    /// <summary>
+    /// 变更字段
+    /// </summary>
+    public string? ChangedFields { get; set; }
 }
 
 /// <summary>
@@ -221,6 +236,24 @@ public class LeanSqlLogCreateDto
     /// </summary>
     [StringLength(100, ErrorMessage = "位置长度不能超过100个字符")]
     public string? Location { get; set; }
+
+    /// <summary>
+    /// 变更前数据
+    /// </summary>
+    [StringLength(4000, ErrorMessage = "变更前数据长度不能超过4000个字符")]
+    public string? BeforeData { get; set; }
+
+    /// <summary>
+    /// 变更后数据
+    /// </summary>
+    [StringLength(4000, ErrorMessage = "变更后数据长度不能超过4000个字符")]
+    public string? AfterData { get; set; }
+
+    /// <summary>
+    /// 变更字段
+    /// </summary>
+    [StringLength(4000, ErrorMessage = "变更字段长度不能超过4000个字符")]
+    public string? ChangedFields { get; set; }
 }
 
 /// <summary>
@@ -287,4 +320,19 @@ public class LeanSqlLogExportDto
     /// 创建时间
     /// </summary>
     public DateTime CreateTime { get; set; }
+
+    /// <summary>
+    /// 变更前数据
+    /// </summary>
+    public string? BeforeData { get; set; }
+
+    /// <summary>
+    /// 变更后数据
+    /// </summary>
+    public string? AfterData { get; set; }
+
+    /// <summary>
+    /// 变更字段
+    /// </summary>
+    public string? ChangedFields { get; set; }
 } 

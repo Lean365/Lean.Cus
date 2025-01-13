@@ -27,6 +27,8 @@ public static class ServiceCollectionExtensions
 
         // 注册应用服务
         services.AddScoped<ILeanUserService, LeanUserService>();
+        services.AddScoped<ILeanRoleService, LeanRoleService>();
+        services.AddScoped<ILeanPositionService, LeanPositionService>();
         // TODO: 注册其他服务...
 
         return services;

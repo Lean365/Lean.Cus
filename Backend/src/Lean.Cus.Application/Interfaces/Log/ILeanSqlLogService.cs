@@ -13,12 +13,7 @@ public interface ILeanSqlLogService
     /// <summary>
     /// 新增SQL日志
     /// </summary>
-    Task<LeanSqlLogDto> AddAsync(LeanSqlLogDto dto);
-
-    /// <summary>
-    /// 更新SQL日志
-    /// </summary>
-    Task<bool> UpdateAsync(LeanSqlLogDto dto);
+    Task<LeanSqlLogDto> CreateAsync(LeanSqlLogCreateDto dto);
 
     /// <summary>
     /// 删除SQL日志
@@ -41,19 +36,9 @@ public interface ILeanSqlLogService
     Task<PagedResults<LeanSqlLogDto>> GetPagedListAsync(LeanSqlLogQueryDto query);
 
     /// <summary>
-    /// 导入SQL日志数据
-    /// </summary>
-    Task<(List<LeanSqlLogDto> SuccessItems, List<string> ErrorMessages)> ImportAsync(byte[] fileBytes);
-
-    /// <summary>
     /// 导出SQL日志数据
     /// </summary>
     Task<byte[]> ExportAsync(LeanSqlLogQueryDto query);
-
-    /// <summary>
-    /// 获取导入模板
-    /// </summary>
-    Task<byte[]> GetImportTemplateAsync();
 
     /// <summary>
     /// 清空SQL日志

@@ -65,4 +65,14 @@ public interface ILeanWorkflowTaskService
     /// <param name="userId">用户ID</param>
     /// <returns>任务列表</returns>
     Task<List<LeanWorkflowTaskDto>> GetMyDoneListAsync(long userId);
+
+    /// <summary>
+    /// 获取用户任务列表
+    /// </summary>
+    Task<List<LeanWorkflowTaskDto>> GetUserTasksAsync(long userId);
+
+    /// <summary>
+    /// 获取角色任务列表
+    /// </summary>
+    Task<List<LeanWorkflowTaskDto>> GetRoleTasksAsync(long roleId);
 } 

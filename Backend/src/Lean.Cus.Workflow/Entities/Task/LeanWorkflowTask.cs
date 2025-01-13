@@ -93,4 +93,11 @@ public class LeanWorkflowTask : LeanBaseEntity
     [SugarColumn(ColumnName = "complete_time", ColumnDescription = "完成时间", 
         ColumnDataType = "datetime", IsNullable = true)]
     public DateTime? CompleteTime { get; set; }
+
+    /// <summary>
+    /// 角色ID
+    /// </summary>
+    [SugarColumn(ColumnName = "role_id", ColumnDescription = "角色ID", 
+        ColumnDataType = "bigint", IsNullable = true)]
+    public long? RoleId { get; set; }
 } 

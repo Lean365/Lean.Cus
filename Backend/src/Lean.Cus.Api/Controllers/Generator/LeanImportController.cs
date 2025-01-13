@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Lean.Cus.Generator.Dtos.Import;
 using Lean.Cus.Generator.IServices.Import;
 using Microsoft.AspNetCore.Mvc;
+using Lean.Cus.Common.Models;
 
 namespace Lean.Cus.Api.Controllers.Generator;
 
@@ -29,9 +30,10 @@ public class LeanImportController : ControllerBase
     /// </summary>
     /// <returns>表名列表</returns>
     [HttpGet("tables")]
-    public async Task<List<string>> GetTables()
+    public async Task<ActionResult<LeanApiResult<List<LeanTableImportDto>>>> GetTables()
     {
-        return await _importService.GetTablesAsync();
+        var result = await _importService.GetTablesAsync();
+        return Ok(LeanApiResult<List<LeanTableImportDto>>.Ok(result));
     }
 
     /// <summary>
@@ -40,9 +42,10 @@ public class LeanImportController : ControllerBase
     /// <param name="tableName">表名</param>
     /// <returns>字段列表</returns>
     [HttpGet("columns/{tableName}")]
-    public async Task<List<LeanColumnImportDto>> GetColumns([FromRoute] string tableName)
+    public async Task<ActionResult<LeanApiResult<List<LeanColumnImportDto>>>> GetColumns([FromRoute] string tableName)
     {
-        return await _importService.GetColumnsAsync(tableName);
+        var result = await _importService.GetColumnsAsync(tableName);
+        return Ok(LeanApiResult<List<LeanColumnImportDto>>.Ok(result));
     }
 
     /// <summary>
@@ -51,8 +54,9 @@ public class LeanImportController : ControllerBase
     /// <param name="tableNames">表名列表</param>
     /// <returns>是否成功</returns>
     [HttpPost("import-to-generator")]
-    public async Task<bool> ImportToGenerator([FromBody] List<string> tableNames)
+    public async Task<ActionResult<LeanApiResult>> ImportToGenerator([FromBody] List<string> tableNames)
     {
-        return await _importService.ImportToGeneratorAsync(tableNames);
+        var result = await _importService.ImportToGeneratorAsync(tableNames);
+        return Ok(result ? LeanApiResult.Ok("导入成功") : LeanApiResult.Fail("导入失败"));
     }
 } 

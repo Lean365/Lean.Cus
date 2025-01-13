@@ -13,12 +13,7 @@ public interface ILeanAuditLogService
     /// <summary>
     /// 新增审计日志
     /// </summary>
-    Task<LeanAuditLogDto> AddAsync(LeanAuditLogDto dto);
-
-    /// <summary>
-    /// 更新审计日志
-    /// </summary>
-    Task<bool> UpdateAsync(LeanAuditLogDto dto);
+    Task<LeanAuditLogDto> CreateAsync(LeanAuditLogDto dto);
 
     /// <summary>
     /// 删除审计日志
@@ -41,19 +36,9 @@ public interface ILeanAuditLogService
     Task<PagedResults<LeanAuditLogDto>> GetPagedListAsync(LeanAuditLogQueryDto query);
 
     /// <summary>
-    /// 导入审计日志数据
-    /// </summary>
-    Task<(List<LeanAuditLogDto> SuccessItems, List<string> ErrorMessages)> ImportAsync(byte[] fileBytes);
-
-    /// <summary>
     /// 导出审计日志数据
     /// </summary>
     Task<byte[]> ExportAsync(LeanAuditLogQueryDto query);
-
-    /// <summary>
-    /// 获取导入模板
-    /// </summary>
-    Task<byte[]> GetImportTemplateAsync();
 
     /// <summary>
     /// 清空审计日志

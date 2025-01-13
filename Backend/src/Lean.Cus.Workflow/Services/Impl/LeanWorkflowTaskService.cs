@@ -172,4 +172,34 @@ public class LeanWorkflowTaskService : ILeanWorkflowTaskService
 
         return list.Adapt<List<LeanWorkflowTaskDto>>();
     }
+
+    /// <summary>
+    /// 获取用户任务列表
+    /// </summary>
+    /// <param name="userId">用户ID</param>
+    /// <returns>任务列表</returns>
+    public async Task<List<LeanWorkflowTaskDto>> GetUserTasksAsync(long userId)
+    {
+        var list = await _db.Queryable<LeanWorkflowTask>()
+            .Where(x => x.AssigneeId == userId)
+            .OrderByDescending(x => x.CreateTime)
+            .ToListAsync();
+
+        return list.Adapt<List<LeanWorkflowTaskDto>>();
+    }
+
+    /// <summary>
+    /// 获取角色任务列表
+    /// </summary>
+    /// <param name="roleId">角色ID</param>
+    /// <returns>任务列表</returns>
+    public async Task<List<LeanWorkflowTaskDto>> GetRoleTasksAsync(long roleId)
+    {
+        var list = await _db.Queryable<LeanWorkflowTask>()
+            .Where(x => x.RoleId == roleId)
+            .OrderByDescending(x => x.CreateTime)
+            .ToListAsync();
+
+        return list.Adapt<List<LeanWorkflowTaskDto>>();
+    }
 } 

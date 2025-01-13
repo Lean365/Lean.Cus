@@ -1,6 +1,8 @@
 using Lean.Cus.Workflow.Dtos.Task;
 using Lean.Cus.Workflow.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using Lean.Cus.Common.Models;
 
 namespace Lean.Cus.Api.Controllers.Workflow;
 
@@ -28,9 +30,10 @@ public class LeanWorkflowTaskController : ControllerBase
     /// <param name="id">任务ID</param>
     /// <param name="comment">处理意见</param>
     [HttpPost("{id}/complete")]
-    public Task CompleteAsync(long id, [FromBody] string? comment)
+    public async Task<ActionResult<LeanApiResult>> CompleteAsync(long id, [FromBody] string? comment)
     {
-        return _service.CompleteAsync(id, comment);
+        await _service.CompleteAsync(id, comment);
+        return Ok(LeanApiResult.Ok("完成成功"));
     }
 
     /// <summary>
@@ -39,9 +42,10 @@ public class LeanWorkflowTaskController : ControllerBase
     /// <param name="id">任务ID</param>
     /// <param name="reason">取消原因</param>
     [HttpPost("{id}/cancel")]
-    public Task CancelAsync(long id, [FromBody] string reason)
+    public async Task<ActionResult<LeanApiResult>> CancelAsync(long id, [FromBody] string reason)
     {
-        return _service.CancelAsync(id, reason);
+        await _service.CancelAsync(id, reason);
+        return Ok(LeanApiResult.Ok("取消成功"));
     }
 
     /// <summary>
@@ -76,9 +80,10 @@ public class LeanWorkflowTaskController : ControllerBase
     /// <param name="id">任务ID</param>
     /// <returns>任务信息</returns>
     [HttpGet("{id}")]
-    public Task<LeanWorkflowTaskDto> GetAsync(long id)
+    public async Task<ActionResult<LeanApiResult<LeanWorkflowTaskDto>>> GetAsync(long id)
     {
-        return _service.GetAsync(id);
+        var result = await _service.GetAsync(id);
+        return Ok(LeanApiResult<LeanWorkflowTaskDto>.Ok(result));
     }
 
     /// <summary>
@@ -86,9 +91,10 @@ public class LeanWorkflowTaskController : ControllerBase
     /// </summary>
     /// <returns>任务列表</returns>
     [HttpGet]
-    public Task<List<LeanWorkflowTaskDto>> GetListAsync()
+    public async Task<ActionResult<LeanApiResult<List<LeanWorkflowTaskDto>>>> GetListAsync()
     {
-        return _service.GetListAsync();
+        var result = await _service.GetListAsync();
+        return Ok(LeanApiResult<List<LeanWorkflowTaskDto>>.Ok(result));
     }
 
     /// <summary>
@@ -111,5 +117,29 @@ public class LeanWorkflowTaskController : ControllerBase
     public Task<List<LeanWorkflowTaskDto>> GetMyDoneListAsync([FromQuery] long userId)
     {
         return _service.GetMyDoneListAsync(userId);
+    }
+
+    /// <summary>
+    /// 获取用户的任务列表
+    /// </summary>
+    /// <param name="userId">用户ID</param>
+    /// <returns>任务列表</returns>
+    [HttpGet("user/{userId}")]
+    public async Task<ActionResult<LeanApiResult<List<LeanWorkflowTaskDto>>>> GetUserTasksAsync(long userId)
+    {
+        var result = await _service.GetUserTasksAsync(userId);
+        return Ok(LeanApiResult<List<LeanWorkflowTaskDto>>.Ok(result));
+    }
+
+    /// <summary>
+    /// 获取角色的任务列表
+    /// </summary>
+    /// <param name="roleId">角色ID</param>
+    /// <returns>任务列表</returns>
+    [HttpGet("role/{roleId}")]
+    public async Task<ActionResult<LeanApiResult<List<LeanWorkflowTaskDto>>>> GetRoleTasksAsync(long roleId)
+    {
+        var result = await _service.GetRoleTasksAsync(roleId);
+        return Ok(LeanApiResult<List<LeanWorkflowTaskDto>>.Ok(result));
     }
 } 

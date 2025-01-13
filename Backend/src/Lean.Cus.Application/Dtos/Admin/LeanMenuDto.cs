@@ -241,7 +241,7 @@ public class LeanMenuStatusUpdateDto
     public long Id { get; set; }
 
     /// <summary>
-    /// 状态
+    /// 状态（0：禁用，1：启用）
     /// </summary>
     [Required(ErrorMessage = "状态不能为空")]
     public LeanStatus Status { get; set; }
@@ -527,4 +527,28 @@ public class LeanMenuImportTemplateDto
     /// 翻译键
     /// </summary>
     public string TransKey { get; set; } = "menu.example";
+}
+
+/// <summary>
+/// 菜单排序DTO
+/// </summary>
+public class LeanMenuSortDto
+{
+    /// <summary>
+    /// 菜单ID
+    /// </summary>
+    [Required(ErrorMessage = "菜单ID不能为空")]
+    public long Id { get; set; }
+
+    /// <summary>
+    /// 排序
+    /// </summary>
+    [Required(ErrorMessage = "排序不能为空")]
+    public int Sort { get; set; }
+
+    /// <summary>
+    /// 父级ID
+    /// </summary>
+    [Required(ErrorMessage = "父级ID不能为空")]
+    public long ParentId { get; set; }
 } 

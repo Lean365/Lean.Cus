@@ -13,7 +13,7 @@ public interface ILeanRoleService
     /// <summary>
     /// 新增角色
     /// </summary>
-    Task<LeanRoleDto> AddAsync(LeanRoleDto dto);
+    Task<LeanRoleDto> CreateAsync(LeanRoleDto dto);
 
     /// <summary>
     /// 更新角色
@@ -69,4 +69,14 @@ public interface ILeanRoleService
     /// 分配角色部门
     /// </summary>
     Task<bool> AssignDepartmentsAsync(long roleId, List<long> departmentIds);
+
+    /// <summary>
+    /// 分配角色菜单
+    /// </summary>
+    Task<bool> AssignMenusAsync(long roleId, List<long> menuIds);
+
+    /// <summary>
+    /// 更新角色状态
+    /// </summary>
+    Task<bool> UpdateStatusAsync(LeanRoleStatusUpdateDto input);
 } 

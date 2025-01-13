@@ -22,29 +22,24 @@ namespace Lean.Cus.Common.Enums;
 public enum LeanOperationType
 {
     /// <summary>
-    /// 其他
-    /// </summary>
-    Other = 0,
-
-    /// <summary>
-    /// 查询
-    /// </summary>
-    Query = 1,
-
-    /// <summary>
     /// 新增
     /// </summary>
-    Create = 2,
+    Add = 1,
 
     /// <summary>
     /// 修改
     /// </summary>
-    Update = 3,
+    Update = 2,
 
     /// <summary>
     /// 删除
     /// </summary>
-    Delete = 4,
+    Delete = 3,
+
+    /// <summary>
+    /// 查询
+    /// </summary>
+    Query = 4,
 
     /// <summary>
     /// 导入
@@ -57,37 +52,17 @@ public enum LeanOperationType
     Export = 6,
 
     /// <summary>
-    /// 上传
+    /// 登录
     /// </summary>
-    Upload = 7,
+    Login = 7,
 
     /// <summary>
-    /// 下载
+    /// 退出
     /// </summary>
-    Download = 8,
+    Logout = 8,
 
     /// <summary>
-    /// 授权
+    /// 其他
     /// </summary>
-    Grant = 9,
-
-    /// <summary>
-    /// 强退
-    /// </summary>
-    ForceLogout = 10,
-
-    /// <summary>
-    /// 生成代码
-    /// </summary>
-    GenCode = 11,
-
-    /// <summary>
-    /// 清空数据
-    /// </summary>
-    Clean = 12,
-
-    /// <summary>
-    /// 审批
-    /// </summary>
-    Approve = 13
+    Other = 9
 } 

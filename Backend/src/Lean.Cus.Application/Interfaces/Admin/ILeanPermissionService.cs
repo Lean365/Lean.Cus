@@ -13,7 +13,7 @@ public interface ILeanPermissionService
     /// <summary>
     /// 新增权限
     /// </summary>
-    Task<LeanPermissionDto> AddAsync(LeanPermissionDto dto);
+    Task<LeanPermissionDto> CreateAsync(LeanPermissionDto dto);
 
     /// <summary>
     /// 更新权限

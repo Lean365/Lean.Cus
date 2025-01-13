@@ -1,7 +1,5 @@
 using Lean.Cus.Application.Dtos.Admin;
 using Lean.Cus.Common.Paging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Lean.Cus.Application.Interfaces.Admin;
 
@@ -13,7 +11,7 @@ public interface ILeanMenuService
     /// <summary>
     /// 新增菜单
     /// </summary>
-    Task<LeanMenuDto> AddAsync(LeanMenuDto dto);
+    Task<LeanMenuDto> CreateAsync(LeanMenuDto dto);
 
     /// <summary>
     /// 更新菜单
@@ -69,4 +67,14 @@ public interface ILeanMenuService
     /// 获取菜单树
     /// </summary>
     Task<List<LeanMenuDto>> GetMenuTreeAsync();
-} 
+
+    /// <summary>
+    /// 更新菜单状态
+    /// </summary>
+    Task<bool> UpdateStatusAsync(LeanMenuStatusUpdateDto input);
+
+    /// <summary>
+    /// 更新菜单排序
+    /// </summary>
+    Task<bool> UpdateSortAsync(LeanMenuSortDto input);
+}

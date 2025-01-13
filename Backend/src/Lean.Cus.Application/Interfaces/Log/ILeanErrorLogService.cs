@@ -13,12 +13,7 @@ public interface ILeanErrorLogService
     /// <summary>
     /// 新增错误日志
     /// </summary>
-    Task<LeanErrorLogDto> AddAsync(LeanErrorLogDto dto);
-
-    /// <summary>
-    /// 更新错误日志
-    /// </summary>
-    Task<bool> UpdateAsync(LeanErrorLogDto dto);
+    Task<LeanErrorLogDto> CreateAsync(LeanErrorLogDto dto);
 
     /// <summary>
     /// 删除错误日志
@@ -41,19 +36,9 @@ public interface ILeanErrorLogService
     Task<PagedResults<LeanErrorLogDto>> GetPagedListAsync(LeanErrorLogQueryDto query);
 
     /// <summary>
-    /// 导入错误日志数据
-    /// </summary>
-    Task<(List<LeanErrorLogDto> SuccessItems, List<string> ErrorMessages)> ImportAsync(byte[] fileBytes);
-
-    /// <summary>
     /// 导出错误日志数据
     /// </summary>
     Task<byte[]> ExportAsync(LeanErrorLogQueryDto query);
-
-    /// <summary>
-    /// 获取导入模板
-    /// </summary>
-    Task<byte[]> GetImportTemplateAsync();
 
     /// <summary>
     /// 清空错误日志

@@ -32,7 +32,7 @@ public class LeanMenuService : ILeanMenuService
     /// <summary>
     /// 新增菜单
     /// </summary>
-    public async Task<LeanMenuDto> AddAsync(LeanMenuDto dto)
+    public async Task<LeanMenuDto> CreateAsync(LeanMenuDto dto)
     {
         var menu = dto.Adapt<LeanMenu>();
         await _menuRepository.InsertAsync(menu);
@@ -192,5 +192,35 @@ public class LeanMenuService : ILeanMenuService
         {
             BuildMenuTreeRecursive(child, allMenus);
         }
+    }
+
+    /// <summary>
+    /// 更新菜单状态
+    /// </summary>
+    public async Task<bool> UpdateStatusAsync(LeanMenuStatusUpdateDto input)
+    {
+        var menu = await _menuRepository.GetByIdAsync(input.Id);
+        if (menu == null)
+            return false;
+
+        menu.Status = input.Status;
+        return await _menuRepository.UpdateAsync(menu) > 0;
+    }
+
+    /// <summary>
+    /// 更新菜单排序
+    /// </summary>
+    public async Task<bool> UpdateSortAsync(LeanMenuSortDto input)
+    {
+        var menu = await _menuRepository.GetByIdAsync(input.Id);
+        if (menu == null)
+            return false;
+
+        menu.Sort = input.Sort;
+        if (menu.ParentId != input.ParentId)
+        {
+            menu.ParentId = input.ParentId;
+        }
+        return await _menuRepository.UpdateAsync(menu) > 0;
     }
 } 

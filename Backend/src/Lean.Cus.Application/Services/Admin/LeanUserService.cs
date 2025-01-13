@@ -14,6 +14,7 @@ using Lean.Cus.Common.Security;
 using Lean.Cus.Common.Exceptions;
 using System.Linq.Expressions;
 using Lean.Cus.Common.Enums;
+using System.Linq;
 
 namespace Lean.Cus.Application.Services.Admin;
 
@@ -23,16 +24,23 @@ namespace Lean.Cus.Application.Services.Admin;
 public class LeanUserService : ILeanUserService
 {
     private readonly ILeanRepository<LeanUser> _userRepository;
+    private readonly ILeanRepository<LeanUserRole> _userRoleRepository;
+    private readonly ILeanRepository<LeanUserDepartment> _userDepartmentRepository;
 
-    public LeanUserService(ILeanRepository<LeanUser> userRepository)
+    public LeanUserService(
+        ILeanRepository<LeanUser> userRepository,
+        ILeanRepository<LeanUserRole> userRoleRepository,
+        ILeanRepository<LeanUserDepartment> userDepartmentRepository)
     {
         _userRepository = userRepository;
+        _userRoleRepository = userRoleRepository;
+        _userDepartmentRepository = userDepartmentRepository;
     }
 
     /// <summary>
     /// 新增用户
     /// </summary>
-    public async Task<LeanUserDto> AddAsync(LeanUserDto userDto)
+    public async Task<LeanUserDto> CreateAsync(LeanUserDto userDto)
     {
         var createDto = userDto.Adapt<LeanUserCreateDto>();
         
@@ -215,5 +223,76 @@ public class LeanUserService : ILeanUserService
             return false;
 
         return LeanPasswordHelper.ValidatePassword(password, user.Salt, user.Password);
+    }
+
+    /// <summary>
+    /// 更新用户状态
+    /// </summary>
+    public async Task<bool> UpdateStatusAsync(LeanUserStatusUpdateDto input)
+    {
+        var user = await _userRepository.GetByIdAsync(input.Id);
+        if (user == null)
+            return false;
+
+        user.Status = input.Status;
+        return await _userRepository.UpdateAsync(user) > 0;
+    }
+
+    /// <summary>
+    /// 分配用户角色
+    /// </summary>
+    /// <param name="userId">用户ID</param>
+    /// <param name="roleIds">角色ID列表</param>
+    public async Task<bool> AssignRolesAsync(long userId, List<long> roleIds)
+    {
+        var user = await _userRepository.GetByIdAsync(userId);
+        if (user == null)
+            return false;
+
+        // 删除现有角色关联
+        await _userRoleRepository.DeleteAsync(ur => ur.UserId == userId);
+
+        // 添加新的角色关联
+        if (roleIds?.Count > 0)
+        {
+            var userRoles = roleIds.Select(roleId => new LeanUserRole
+            {
+                UserId = userId,
+                RoleId = roleId
+            }).ToList();
+
+            await _userRoleRepository.InsertRangeAsync(userRoles);
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// 分配用户部门
+    /// </summary>
+    /// <param name="userId">用户ID</param>
+    /// <param name="departmentIds">部门ID列表</param>
+    public async Task<bool> AssignDepartmentsAsync(long userId, List<long> departmentIds)
+    {
+        var user = await _userRepository.GetByIdAsync(userId);
+        if (user == null)
+            return false;
+
+        // 删除现有部门关联
+        await _userDepartmentRepository.DeleteAsync(ud => ud.UserId == userId);
+
+        // 添加新的部门关联
+        if (departmentIds?.Count > 0)
+        {
+            var userDepartments = departmentIds.Select(departmentId => new LeanUserDepartment
+            {
+                UserId = userId,
+                DepartmentId = departmentId
+            }).ToList();
+
+            await _userDepartmentRepository.InsertRangeAsync(userDepartments);
+        }
+
+        return true;
     }
 } 

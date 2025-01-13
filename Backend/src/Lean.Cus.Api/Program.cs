@@ -4,11 +4,16 @@ using Lean.Cus.Infrastructure.Data.Configurations;
 using Lean.Cus.Infrastructure.Filters;
 using Lean.Cus.Common.Exceptions;
 using Lean.Cus.Common.Logging;
+using Lean.Cus.Common.Configs;
 using NLog;
 using NLog.Web;
 using SqlSugar;
 using Lean.Cus.Generator.Services.Designer;
 using Lean.Cus.Generator.Services.Generator;
+using Lean.Cus.Application.Interfaces.Auth;
+using Lean.Cus.Application.Services.Auth;
+using Lean.Cus.Application.Interfaces.Admin;
+using Lean.Cus.Application.Services.Admin;
 
 // 初始化NLog
 var logger = LogManager.Setup()
@@ -65,6 +70,22 @@ try
     // 注册工作流服务
     builder.Services.AddLeanWorkflow();
 
+    // 注册认证服务
+    builder.Services.AddScoped<ILeanAuthService, LeanAuthService>();
+
+    // 注册验证码服务
+    builder.Services.Configure<LeanCaptchaConfig>(builder.Configuration.GetSection("Captcha"));
+    builder.Services.AddScoped<ILeanCaptchaService, LeanCaptchaService>();
+
+    // 注册用户扩展服务
+    builder.Services.AddScoped<ILeanUserExtendService, LeanUserExtendService>();
+
+    // 注册设备扩展服务
+    builder.Services.AddScoped<ILeanDevicesExtendService, LeanDevicesExtendService>();
+
+    // 添加分布式缓存
+    builder.Services.AddDistributedMemoryCache();
+
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
@@ -104,6 +125,9 @@ try
 
     // 启用路由
     app.MapControllers();
+
+    // 初始化验证码资源
+    app.UseLeanCaptcha();
 
     // 启动应用
     app.Run();

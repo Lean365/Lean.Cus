@@ -12,7 +12,7 @@ public interface ILeanWorkflowHistoryService
     /// </summary>
     /// <param name="dto">历史记录信息</param>
     /// <returns>历史记录ID</returns>
-    Task<long> AddAsync(LeanWorkflowHistoryDto dto);
+    Task<long> CreateAsync(LeanWorkflowHistoryDto dto);
 
     /// <summary>
     /// 获取历史记录

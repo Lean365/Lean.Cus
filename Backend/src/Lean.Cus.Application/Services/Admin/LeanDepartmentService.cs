@@ -32,7 +32,7 @@ public class LeanDepartmentService : ILeanDepartmentService
     /// <summary>
     /// 新增部门
     /// </summary>
-    public async Task<LeanDepartmentDto> AddAsync(LeanDepartmentDto dto)
+    public async Task<LeanDepartmentDto> CreateAsync(LeanDepartmentDto dto)
     {
         var department = dto.Adapt<LeanDepartment>();
         await _departmentRepository.InsertAsync(department);
@@ -165,16 +165,31 @@ public class LeanDepartmentService : ILeanDepartmentService
     /// </summary>
     public async Task<List<LeanDepartmentDto>> GetDepartmentTreeAsync()
     {
-        var allDepartments = await _departmentRepository.GetListAsync();
-        var dtos = allDepartments.Adapt<List<LeanDepartmentDto>>();
-        
-        // 构建树形结构
-        var rootDepartments = dtos.Where(d => !d.ParentId.HasValue || d.ParentId == 0).ToList();
+        var departments = await _departmentRepository.GetListAsync();
+        var dtos = departments.Adapt<List<LeanDepartmentDto>>();
+        return BuildDepartmentTree(dtos);
+    }
+
+    /// <summary>
+    /// 更新部门状态
+    /// </summary>
+    public async Task<bool> UpdateStatusAsync(LeanDepartmentStatusUpdateDto input)
+    {
+        var department = await _departmentRepository.GetByIdAsync(input.Id);
+        if (department == null)
+            return false;
+
+        department.Status = input.Status;
+        return await _departmentRepository.UpdateAsync(department) > 0;
+    }
+
+    private List<LeanDepartmentDto> BuildDepartmentTree(List<LeanDepartmentDto> departments)
+    {
+        var rootDepartments = departments.Where(d => !d.ParentId.HasValue || d.ParentId == 0).ToList();
         foreach (var department in rootDepartments)
         {
-            BuildDepartmentTree(department, dtos);
+            BuildDepartmentTree(department, departments);
         }
-        
         return rootDepartments;
     }
 
