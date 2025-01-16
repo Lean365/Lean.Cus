@@ -3,7 +3,7 @@ export default {
   username: 'اسم المستخدم',
   password: 'كلمة المرور',
   remember: 'تذكرني',
-  forgot: 'نسيت كلمة المرور',
+  forgot: 'نسيت كلمة المرور؟',
   submit: 'تسجيل الدخول',
   register: 'تسجيل حساب جديد',
   usernameRequired: 'الرجاء إدخال اسم المستخدم',

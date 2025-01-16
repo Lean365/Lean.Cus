@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
+import type { PiniaPluginContext } from 'pinia'
 import { ref } from 'vue'
+import type { LeanLoginResultDto } from '@/types/auth'
 
 export const useUserStore = defineStore('user', () => {
   const token = ref('')
@@ -10,32 +12,43 @@ export const useUserStore = defineStore('user', () => {
     avatar: string
     roles: string[]
     permissions: string[]
-  } | null>(null)
+  }>()
 
-  // 设置token
   function setToken(value: string) {
     token.value = value
   }
 
-  // 设置用户信息
-  function setUserInfo(info: typeof userInfo.value) {
-    userInfo.value = info
+  function setUserInfo(info: LeanLoginResultDto) {
+    userInfo.value = {
+      id: info.userId.toString(),
+      username: info.userName,
+      realName: info.realName,
+      avatar: info.avatar,
+      roles: info.roles,
+      permissions: info.permissions
+    }
   }
 
-  // 清除用户信息
   function clearUser() {
     token.value = ''
-    userInfo.value = null
+    userInfo.value = undefined
   }
 
-  // 判断是否有权限
   function hasPermission(permission: string) {
     return userInfo.value?.permissions.includes(permission) ?? false
   }
 
-  // 判断是否有角色
   function hasRole(role: string) {
     return userInfo.value?.roles.includes(role) ?? false
+  }
+
+  async function login(loginResult: LeanLoginResultDto) {
+    setToken(loginResult.accessToken)
+    setUserInfo(loginResult)
+  }
+
+  function logout() {
+    clearUser()
   }
 
   return {
@@ -45,6 +58,10 @@ export const useUserStore = defineStore('user', () => {
     setUserInfo,
     clearUser,
     hasPermission,
-    hasRole
+    hasRole,
+    login,
+    logout
   }
+}, {
+  persist: true
 }) 

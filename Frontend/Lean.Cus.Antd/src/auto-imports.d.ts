@@ -6,11 +6,53 @@
 // biome-ignore lint: disable
 export {}
 declare global {
+  const AccountBookOutlined: typeof import('@ant-design/icons-vue')['AccountBookOutlined']
+  const AlertOutlined: typeof import('@ant-design/icons-vue')['AlertOutlined']
+  const AreaChartOutlined: typeof import('@ant-design/icons-vue')['AreaChartOutlined']
+  const BarChartOutlined: typeof import('@ant-design/icons-vue')['BarChartOutlined']
+  const BellOutlined: typeof import('@ant-design/icons-vue')['BellOutlined']
+  const BookOutlined: typeof import('@ant-design/icons-vue')['BookOutlined']
+  const BuildOutlined: typeof import('@ant-design/icons-vue')['BuildOutlined']
+  const BulbOutlined: typeof import('@ant-design/icons-vue')['BulbOutlined']
+  const CalculatorOutlined: typeof import('@ant-design/icons-vue')['CalculatorOutlined']
+  const CarOutlined: typeof import('@ant-design/icons-vue')['CarOutlined']
+  const CloudOutlined: typeof import('@ant-design/icons-vue')['CloudOutlined']
+  const CoffeeOutlined: typeof import('@ant-design/icons-vue')['CoffeeOutlined']
+  const CompassOutlined: typeof import('@ant-design/icons-vue')['CompassOutlined']
+  const CrownOutlined: typeof import('@ant-design/icons-vue')['CrownOutlined']
   const CryptoService: typeof import('./utils/crypto')['CryptoService']
+  const DashboardOutlined: typeof import('@ant-design/icons-vue')['DashboardOutlined']
+  const DatabaseOutlined: typeof import('@ant-design/icons-vue')['DatabaseOutlined']
+  const DownOutlined: typeof import('@ant-design/icons-vue')['DownOutlined']
   const EChartsService: typeof import('./utils/echarts')['EChartsService']
   const EffectScope: typeof import('vue')['EffectScope']
+  const EnvironmentOutlined: typeof import('@ant-design/icons-vue')['EnvironmentOutlined']
+  const ExperimentOutlined: typeof import('@ant-design/icons-vue')['ExperimentOutlined']
+  const FireOutlined: typeof import('@ant-design/icons-vue')['FireOutlined']
+  const FlagOutlined: typeof import('@ant-design/icons-vue')['FlagOutlined']
   const Form: typeof import('ant-design-vue')['Form']
+  const GiftOutlined: typeof import('@ant-design/icons-vue')['GiftOutlined']
+  const GlobalOutlined: typeof import('@ant-design/icons-vue')['GlobalOutlined']
+  const HeartOutlined: typeof import('@ant-design/icons-vue')['HeartOutlined']
+  const HomeOutlined: typeof import('@ant-design/icons-vue')['HomeOutlined']
+  const InsuranceOutlined: typeof import('@ant-design/icons-vue')['InsuranceOutlined']
+  const LikeOutlined: typeof import('@ant-design/icons-vue')['LikeOutlined']
+  const LineChartOutlined: typeof import('@ant-design/icons-vue')['LineChartOutlined']
+  const LinkOutlined: typeof import('@ant-design/icons-vue')['LinkOutlined']
+  const LogoutOutlined: typeof import('@ant-design/icons-vue')['LogoutOutlined']
   const Modal: typeof import('ant-design-vue')['Modal']
+  const PieChartOutlined: typeof import('@ant-design/icons-vue')['PieChartOutlined']
+  const PropertySafetyOutlined: typeof import('@ant-design/icons-vue')['PropertySafetyOutlined']
+  const ReconciliationOutlined: typeof import('@ant-design/icons-vue')['ReconciliationOutlined']
+  const RedEnvelopeOutlined: typeof import('@ant-design/icons-vue')['RedEnvelopeOutlined']
+  const RiseOutlined: typeof import('@ant-design/icons-vue')['RiseOutlined']
+  const SafetyCertificateOutlined: typeof import('@ant-design/icons-vue')['SafetyCertificateOutlined']
+  const SettingOutlined: typeof import('@ant-design/icons-vue')['SettingOutlined']
+  const SoundOutlined: typeof import('@ant-design/icons-vue')['SoundOutlined']
+  const StarOutlined: typeof import('@ant-design/icons-vue')['StarOutlined']
+  const ThunderboltOutlined: typeof import('@ant-design/icons-vue')['ThunderboltOutlined']
+  const TrophyOutlined: typeof import('@ant-design/icons-vue')['TrophyOutlined']
+  const WalletOutlined: typeof import('@ant-design/icons-vue')['WalletOutlined']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']
@@ -31,6 +73,7 @@ declare global {
   const createReactiveFn: typeof import('@vueuse/core')['createReactiveFn']
   const createReusableTemplate: typeof import('@vueuse/core')['createReusableTemplate']
   const createSharedComposable: typeof import('@vueuse/core')['createSharedComposable']
+  const createTemplate: typeof import('./api/generator/template')['createTemplate']
   const createTemplatePromise: typeof import('@vueuse/core')['createTemplatePromise']
   const createUnrefFn: typeof import('@vueuse/core')['createUnrefFn']
   const customRef: typeof import('vue')['customRef']
@@ -41,23 +84,37 @@ declare global {
   const defineStore: typeof import('pinia')['defineStore']
   const del: typeof import('./api/request')['del']
   const deleteForm: typeof import('./api/workflow/index')['deleteForm']
+  const deleteTemplate: typeof import('./api/generator/template')['deleteTemplate']
   const deprecateVersion: typeof import('./api/workflow/index')['deprecateVersion']
   const download: typeof import('./utils/request')['download']
+  const downloadCode: typeof import('./api/generator/generator')['downloadCode']
   const eagerComputed: typeof import('@vueuse/core')['eagerComputed']
   const effectScope: typeof import('vue')['effectScope']
   const extendRef: typeof import('@vueuse/core')['extendRef']
+  const generateCaptcha: typeof import('./api/auth/index')['generateCaptcha']
   const generateCode: typeof import('./api/generator/index')['generateCode']
   const get: typeof import('./api/request')['get']
   const getActivePinia: typeof import('pinia')['getActivePinia']
+  const getCSharpFieldName: typeof import('./utils/generator')['getCSharpFieldName']
+  const getCSharpToSqlType: typeof import('./utils/generator')['getCSharpToSqlType']
+  const getCSharpToTypeScriptType: typeof import('./utils/generator')['getCSharpToTypeScriptType']
   const getCurrentInstance: typeof import('vue')['getCurrentInstance']
   const getCurrentScope: typeof import('vue')['getCurrentScope']
+  const getDbColumnName: typeof import('./utils/generator')['getDbColumnName']
   const getDesign: typeof import('./api/workflow/index')['getDesign']
   const getDoneTasks: typeof import('./api/workflow/index')['getDoneTasks']
   const getForm: typeof import('./api/workflow/index')['getForm']
   const getNodeMetrics: typeof import('./api/workflow/index')['getNodeMetrics']
+  const getSqlToCSharpType: typeof import('./utils/generator')['getSqlToCSharpType']
+  const getSqlTypeDefaultLength: typeof import('./utils/generator')['getSqlTypeDefaultLength']
+  const getSqlTypeDefaultPrecision: typeof import('./utils/generator')['getSqlTypeDefaultPrecision']
   const getTableDesign: typeof import('./api/generator/index')['getTableDesign']
   const getTaskHistory: typeof import('./api/workflow/index')['getTaskHistory']
+  const getTemplate: typeof import('./api/generator/template')['getTemplate']
+  const getTemplateList: typeof import('./api/generator/template')['getTemplateList']
   const getTodoTasks: typeof import('./api/workflow/index')['getTodoTasks']
+  const getTypeScriptFieldName: typeof import('./utils/generator')['getTypeScriptFieldName']
+  const getUserInfo: typeof import('./api/auth/index')['getUserInfo']
   const getVersionDesign: typeof import('./api/workflow/index')['getVersionDesign']
   const getVersions: typeof import('./api/workflow/index')['getVersions']
   const getWorkflowMetrics: typeof import('./api/workflow/index')['getWorkflowMetrics']
@@ -71,6 +128,8 @@ declare global {
   const isReactive: typeof import('vue')['isReactive']
   const isReadonly: typeof import('vue')['isReadonly']
   const isRef: typeof import('vue')['isRef']
+  const login: typeof import('./api/auth/index')['login']
+  const logout: typeof import('./api/auth/index')['logout']
   const makeDestructurable: typeof import('@vueuse/core')['makeDestructurable']
   const mapActions: typeof import('pinia')['mapActions']
   const mapGetters: typeof import('pinia')['mapGetters']
@@ -104,6 +163,7 @@ declare global {
   const onWatcherCleanup: typeof import('vue')['onWatcherCleanup']
   const pausableWatch: typeof import('@vueuse/core')['pausableWatch']
   const post: typeof import('./api/request')['post']
+  const previewCode: typeof import('./api/generator/generator')['previewCode']
   const provide: typeof import('vue')['provide']
   const provideLocal: typeof import('@vueuse/core')['provideLocal']
   const publishVersion: typeof import('./api/workflow/index')['publishVersion']
@@ -121,7 +181,8 @@ declare global {
   const refDefault: typeof import('@vueuse/core')['refDefault']
   const refThrottled: typeof import('@vueuse/core')['refThrottled']
   const refWithControl: typeof import('@vueuse/core')['refWithControl']
-  const request: typeof import('./api/request')['default']
+  const refreshToken: typeof import('./api/auth/index')['refreshToken']
+  const request: typeof import('./utils/request')['request']
   const resolveComponent: typeof import('vue')['resolveComponent']
   const resolveRef: typeof import('@vueuse/core')['resolveRef']
   const resolveUnref: typeof import('@vueuse/core')['resolveUnref']
@@ -160,6 +221,7 @@ declare global {
   const unrefElement: typeof import('@vueuse/core')['unrefElement']
   const until: typeof import('@vueuse/core')['until']
   const updateForm: typeof import('./api/workflow/index')['updateForm']
+  const updateTemplate: typeof import('./api/generator/template')['updateTemplate']
   const upload: typeof import('./utils/request')['upload']
   const useActiveElement: typeof import('@vueuse/core')['useActiveElement']
   const useAnimate: typeof import('@vueuse/core')['useAnimate']
@@ -227,6 +289,7 @@ declare global {
   const useFps: typeof import('@vueuse/core')['useFps']
   const useFullscreen: typeof import('@vueuse/core')['useFullscreen']
   const useGamepad: typeof import('@vueuse/core')['useGamepad']
+  const useGeneratorStore: typeof import('./stores/generator')['useGeneratorStore']
   const useGeolocation: typeof import('@vueuse/core')['useGeolocation']
   const useI18n: typeof import('vue-i18n')['useI18n']
   const useId: typeof import('vue')['useId']
@@ -301,6 +364,7 @@ declare global {
   const useTextDirection: typeof import('@vueuse/core')['useTextDirection']
   const useTextSelection: typeof import('@vueuse/core')['useTextSelection']
   const useTextareaAutosize: typeof import('@vueuse/core')['useTextareaAutosize']
+  const useThemeStore: typeof import('./stores/theme')['useThemeStore']
   const useThrottle: typeof import('@vueuse/core')['useThrottle']
   const useThrottleFn: typeof import('@vueuse/core')['useThrottleFn']
   const useThrottledRefHistory: typeof import('@vueuse/core')['useThrottledRefHistory']
@@ -329,6 +393,8 @@ declare global {
   const useWindowFocus: typeof import('@vueuse/core')['useWindowFocus']
   const useWindowScroll: typeof import('@vueuse/core')['useWindowScroll']
   const useWindowSize: typeof import('@vueuse/core')['useWindowSize']
+  const validateCredentials: typeof import('./api/auth/index')['validateCredentials']
+  const verifyCaptcha: typeof import('./api/auth/index')['verifyCaptcha']
   const watch: typeof import('vue')['watch']
   const watchArray: typeof import('@vueuse/core')['watchArray']
   const watchAtMost: typeof import('@vueuse/core')['watchAtMost']
@@ -357,6 +423,9 @@ declare global {
   // @ts-ignore
   export type { EChartsService } from './utils/echarts'
   import('./utils/echarts')
+  // @ts-ignore
+  export type { Template } from './api/generator/template'
+  import('./api/generator/template')
   // @ts-ignore
   export type { TableDesign, ColumnDesign, GenerateConfig, GenerateResult, GeneratedFile } from './api/generator/types'
   import('./api/generator/types')
@@ -395,6 +464,7 @@ declare module 'vue' {
     readonly createReactiveFn: UnwrapRef<typeof import('@vueuse/core')['createReactiveFn']>
     readonly createReusableTemplate: UnwrapRef<typeof import('@vueuse/core')['createReusableTemplate']>
     readonly createSharedComposable: UnwrapRef<typeof import('@vueuse/core')['createSharedComposable']>
+    readonly createTemplate: UnwrapRef<typeof import('./api/generator/template')['createTemplate']>
     readonly createTemplatePromise: UnwrapRef<typeof import('@vueuse/core')['createTemplatePromise']>
     readonly createUnrefFn: UnwrapRef<typeof import('@vueuse/core')['createUnrefFn']>
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
@@ -403,25 +473,35 @@ declare module 'vue' {
     readonly defineAsyncComponent: UnwrapRef<typeof import('vue')['defineAsyncComponent']>
     readonly defineComponent: UnwrapRef<typeof import('vue')['defineComponent']>
     readonly defineStore: UnwrapRef<typeof import('pinia')['defineStore']>
-    readonly del: UnwrapRef<typeof import('./api/request')['del']>
     readonly deleteForm: UnwrapRef<typeof import('./api/workflow/index')['deleteForm']>
+    readonly deleteTemplate: UnwrapRef<typeof import('./api/generator/template')['deleteTemplate']>
     readonly deprecateVersion: UnwrapRef<typeof import('./api/workflow/index')['deprecateVersion']>
-    readonly download: UnwrapRef<typeof import('./utils/request')['download']>
+    readonly downloadCode: UnwrapRef<typeof import('./api/generator/generator')['downloadCode']>
     readonly eagerComputed: UnwrapRef<typeof import('@vueuse/core')['eagerComputed']>
     readonly effectScope: UnwrapRef<typeof import('vue')['effectScope']>
     readonly extendRef: UnwrapRef<typeof import('@vueuse/core')['extendRef']>
+    readonly generateCaptcha: UnwrapRef<typeof import('./api/auth/index')['generateCaptcha']>
     readonly generateCode: UnwrapRef<typeof import('./api/generator/index')['generateCode']>
-    readonly get: UnwrapRef<typeof import('./api/request')['get']>
     readonly getActivePinia: UnwrapRef<typeof import('pinia')['getActivePinia']>
+    readonly getCSharpFieldName: UnwrapRef<typeof import('./utils/generator')['getCSharpFieldName']>
+    readonly getCSharpToSqlType: UnwrapRef<typeof import('./utils/generator')['getCSharpToSqlType']>
+    readonly getCSharpToTypeScriptType: UnwrapRef<typeof import('./utils/generator')['getCSharpToTypeScriptType']>
     readonly getCurrentInstance: UnwrapRef<typeof import('vue')['getCurrentInstance']>
     readonly getCurrentScope: UnwrapRef<typeof import('vue')['getCurrentScope']>
+    readonly getDbColumnName: UnwrapRef<typeof import('./utils/generator')['getDbColumnName']>
     readonly getDesign: UnwrapRef<typeof import('./api/workflow/index')['getDesign']>
     readonly getDoneTasks: UnwrapRef<typeof import('./api/workflow/index')['getDoneTasks']>
     readonly getForm: UnwrapRef<typeof import('./api/workflow/index')['getForm']>
     readonly getNodeMetrics: UnwrapRef<typeof import('./api/workflow/index')['getNodeMetrics']>
+    readonly getSqlToCSharpType: UnwrapRef<typeof import('./utils/generator')['getSqlToCSharpType']>
+    readonly getSqlTypeDefaultLength: UnwrapRef<typeof import('./utils/generator')['getSqlTypeDefaultLength']>
+    readonly getSqlTypeDefaultPrecision: UnwrapRef<typeof import('./utils/generator')['getSqlTypeDefaultPrecision']>
     readonly getTableDesign: UnwrapRef<typeof import('./api/generator/index')['getTableDesign']>
     readonly getTaskHistory: UnwrapRef<typeof import('./api/workflow/index')['getTaskHistory']>
+    readonly getTemplate: UnwrapRef<typeof import('./api/generator/template')['getTemplate']>
+    readonly getTemplateList: UnwrapRef<typeof import('./api/generator/template')['getTemplateList']>
     readonly getTodoTasks: UnwrapRef<typeof import('./api/workflow/index')['getTodoTasks']>
+    readonly getTypeScriptFieldName: UnwrapRef<typeof import('./utils/generator')['getTypeScriptFieldName']>
     readonly getVersionDesign: UnwrapRef<typeof import('./api/workflow/index')['getVersionDesign']>
     readonly getVersions: UnwrapRef<typeof import('./api/workflow/index')['getVersions']>
     readonly getWorkflowMetrics: UnwrapRef<typeof import('./api/workflow/index')['getWorkflowMetrics']>
@@ -435,6 +515,8 @@ declare module 'vue' {
     readonly isReactive: UnwrapRef<typeof import('vue')['isReactive']>
     readonly isReadonly: UnwrapRef<typeof import('vue')['isReadonly']>
     readonly isRef: UnwrapRef<typeof import('vue')['isRef']>
+    readonly login: UnwrapRef<typeof import('./api/auth/index')['login']>
+    readonly logout: UnwrapRef<typeof import('./api/auth/index')['logout']>
     readonly makeDestructurable: UnwrapRef<typeof import('@vueuse/core')['makeDestructurable']>
     readonly mapActions: UnwrapRef<typeof import('pinia')['mapActions']>
     readonly mapGetters: UnwrapRef<typeof import('pinia')['mapGetters']>
@@ -467,11 +549,10 @@ declare module 'vue' {
     readonly onUpdated: UnwrapRef<typeof import('vue')['onUpdated']>
     readonly onWatcherCleanup: UnwrapRef<typeof import('vue')['onWatcherCleanup']>
     readonly pausableWatch: UnwrapRef<typeof import('@vueuse/core')['pausableWatch']>
-    readonly post: UnwrapRef<typeof import('./api/request')['post']>
+    readonly previewCode: UnwrapRef<typeof import('./api/generator/generator')['previewCode']>
     readonly provide: UnwrapRef<typeof import('vue')['provide']>
     readonly provideLocal: UnwrapRef<typeof import('@vueuse/core')['provideLocal']>
     readonly publishVersion: UnwrapRef<typeof import('./api/workflow/index')['publishVersion']>
-    readonly put: UnwrapRef<typeof import('./api/request')['put']>
     readonly reactify: UnwrapRef<typeof import('@vueuse/core')['reactify']>
     readonly reactifyObject: UnwrapRef<typeof import('@vueuse/core')['reactifyObject']>
     readonly reactive: UnwrapRef<typeof import('vue')['reactive']>
@@ -485,7 +566,8 @@ declare module 'vue' {
     readonly refDefault: UnwrapRef<typeof import('@vueuse/core')['refDefault']>
     readonly refThrottled: UnwrapRef<typeof import('@vueuse/core')['refThrottled']>
     readonly refWithControl: UnwrapRef<typeof import('@vueuse/core')['refWithControl']>
-    readonly request: UnwrapRef<typeof import('./api/request')['default']>
+    readonly refreshToken: UnwrapRef<typeof import('./api/auth/index')['refreshToken']>
+    readonly request: UnwrapRef<typeof import('./utils/request')['request']>
     readonly resolveComponent: UnwrapRef<typeof import('vue')['resolveComponent']>
     readonly resolveRef: UnwrapRef<typeof import('@vueuse/core')['resolveRef']>
     readonly resolveUnref: UnwrapRef<typeof import('@vueuse/core')['resolveUnref']>
@@ -524,7 +606,7 @@ declare module 'vue' {
     readonly unrefElement: UnwrapRef<typeof import('@vueuse/core')['unrefElement']>
     readonly until: UnwrapRef<typeof import('@vueuse/core')['until']>
     readonly updateForm: UnwrapRef<typeof import('./api/workflow/index')['updateForm']>
-    readonly upload: UnwrapRef<typeof import('./utils/request')['upload']>
+    readonly updateTemplate: UnwrapRef<typeof import('./api/generator/template')['updateTemplate']>
     readonly useActiveElement: UnwrapRef<typeof import('@vueuse/core')['useActiveElement']>
     readonly useAnimate: UnwrapRef<typeof import('@vueuse/core')['useAnimate']>
     readonly useArrayDifference: UnwrapRef<typeof import('@vueuse/core')['useArrayDifference']>
@@ -591,6 +673,7 @@ declare module 'vue' {
     readonly useFps: UnwrapRef<typeof import('@vueuse/core')['useFps']>
     readonly useFullscreen: UnwrapRef<typeof import('@vueuse/core')['useFullscreen']>
     readonly useGamepad: UnwrapRef<typeof import('@vueuse/core')['useGamepad']>
+    readonly useGeneratorStore: UnwrapRef<typeof import('./stores/generator')['useGeneratorStore']>
     readonly useGeolocation: UnwrapRef<typeof import('@vueuse/core')['useGeolocation']>
     readonly useI18n: UnwrapRef<typeof import('vue-i18n')['useI18n']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
@@ -693,6 +776,8 @@ declare module 'vue' {
     readonly useWindowFocus: UnwrapRef<typeof import('@vueuse/core')['useWindowFocus']>
     readonly useWindowScroll: UnwrapRef<typeof import('@vueuse/core')['useWindowScroll']>
     readonly useWindowSize: UnwrapRef<typeof import('@vueuse/core')['useWindowSize']>
+    readonly validateCredentials: UnwrapRef<typeof import('./api/auth/index')['validateCredentials']>
+    readonly verifyCaptcha: UnwrapRef<typeof import('./api/auth/index')['verifyCaptcha']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>
     readonly watchArray: UnwrapRef<typeof import('@vueuse/core')['watchArray']>
     readonly watchAtMost: UnwrapRef<typeof import('@vueuse/core')['watchAtMost']>

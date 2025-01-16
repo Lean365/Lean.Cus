@@ -1,80 +1,83 @@
 import axios from 'axios'
-import type { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios'
+import type { LeanApiResult } from '@/types/auth'
 import { message } from 'ant-design-vue'
-import { useUserStore } from '@/stores/user'
 
-interface ApiResponse<T = any> {
-  code: number
-  msg: string
-  data: T
-}
-
-// 创建 axios 实例
-const service: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL as string,
+// 创建axios实例
+const request = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json;charset=utf-8'
-  }
+  withCredentials: true // 允许跨域携带cookie
 })
 
 // 请求拦截器
-service.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
-    const userStore = useUserStore()
-    const token = userStore.token
-    if (token) {
-      config.headers = config.headers || {}
-      config.headers.Authorization = `Bearer ${token}`
+request.interceptors.request.use(
+  (config) => {
+    // 从cookie中获取CSRF token
+    const cookies = document.cookie.split(';');
+    console.log('所有cookies:', cookies);
+    
+    const csrfCookie = cookies.find(cookie => cookie.trim().startsWith('XSRF-TOKEN='));
+    console.log('找到的CSRF cookie:', csrfCookie);
+    
+    if (csrfCookie) {
+      const csrfToken = csrfCookie.split('=')[1];
+      if (csrfToken) {
+        const decodedToken = decodeURIComponent(csrfToken);
+        config.headers['X-XSRF-TOKEN'] = decodedToken;
+        console.log('设置CSRF Token:', decodedToken);
+      } else {
+        console.warn('CSRF Token 值为空');
+      }
+    } else {
+      console.warn('未找到CSRF Token cookie');
     }
-    return config
+    
+    console.log('完整请求配置:', {
+      url: config.url,
+      method: config.method,
+      data: config.data,
+      headers: config.headers
+    });
+    return config;
   },
-  (error: AxiosError) => {
-    return Promise.reject(error)
+  (error) => {
+    console.error('请求错误:', error);
+    return Promise.reject(error);
   }
-)
+);
 
 // 响应拦截器
-service.interceptors.response.use(
-  (response: AxiosResponse<ApiResponse>) => {
-    const { code, msg, data } = response.data
-    if (code === 200) {
-      return data
-    } else {
-      message.error(msg || '操作失败')
-      return Promise.reject(new Error(msg || '操作失败'))
+request.interceptors.response.use(
+  (response) => {
+    console.log('响应成功:', {
+      url: response.config.url,
+      status: response.status,
+      data: response.data,
+      headers: response.headers
+    });
+    
+    const res = response.data;
+    if (!res.success) {
+      // 对于验证码验证失败的情况，不显示错误消息
+      if (!response.config.url?.includes('/api/captcha/verify') || res.message !== '验证失败') {
+        message.error(res.message || '请求失败');
+      }
+      return Promise.reject(new Error(res.message || '请求失败'));
     }
+    return response.data;
   },
-  (error: AxiosError) => {
-    const { response } = error
-    let msg = '请求失败'
-    if (response && response.data) {
-      msg = (response.data as ApiResponse).msg
-    }
-    message.error(msg)
-    return Promise.reject(error)
+  (error) => {
+    console.error('响应错误:', {
+      url: error.config?.url,
+      status: error.response?.status,
+      data: error.response?.data,
+      headers: error.response?.headers,
+      message: error.message
+    });
+    
+    message.error(error.response?.data?.message || error.message || '请求失败');
+    return Promise.reject(error);
   }
-)
+);
 
-// 请求方法
-interface RequestMethods {
-  get: <T = any>(url: string, config?: AxiosRequestConfig) => Promise<T>
-  post: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) => Promise<T>
-  put: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) => Promise<T>
-  delete: <T = any>(url: string, config?: AxiosRequestConfig) => Promise<T>
-}
-
-export const request: RequestMethods = {
-  get: <T = any>(url: string, config?: AxiosRequestConfig) => {
-    return service.get<any, T>(url, config)
-  },
-  post: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) => {
-    return service.post<any, T>(url, data, config)
-  },
-  put: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) => {
-    return service.put<any, T>(url, data, config)
-  },
-  delete: <T = any>(url: string, config?: AxiosRequestConfig) => {
-    return service.delete<any, T>(url, config)
-  }
-} 
+export { request }

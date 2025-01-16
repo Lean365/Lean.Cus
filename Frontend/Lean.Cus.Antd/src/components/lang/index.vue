@@ -12,10 +12,9 @@
 
 <template>
   <a-dropdown>
-    <span class="lang-trigger">
-      <span class="flag-icon" :class="currentLangFlag"></span>
-      <span>{{ currentLangLabel }}</span>
-    </span>
+    <div class="lang-switch">
+      <span class="flag-icon" :class="currentLangFlag" />
+    </div>
     <template #overlay>
       <a-menu @click="handleMenuClick">
         <a-menu-item v-for="lang in languages" :key="lang.value">
@@ -27,11 +26,16 @@
   </a-dropdown>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed } from 'vue'
+import { TranslationOutlined } from '@ant-design/icons-vue'
 import { useI18n } from 'vue-i18n'
-import { message } from 'ant-design-vue'
+import { message, theme } from 'ant-design-vue'
+import type { MenuProps } from 'ant-design-vue'
 import 'flag-icons/css/flag-icons.min.css'
+
+const { token } = theme.useToken()
+const { locale } = useI18n()
 
 // 支持的语言列表
 const languages = [
@@ -46,25 +50,12 @@ const languages = [
   { label: '한국어', value: 'ko-KR', flag: 'fi fi-kr' }
 ]
 
-const { locale } = useI18n()
-
-// 计算当前语言显示名称
-const currentLangLabel = computed(() => {
-  const lang = languages.find(item => item.value === locale.value)
-  return lang ? lang.label : 'English'
-})
-
-// 计算当前语言的国旗图标
-const currentLangFlag = computed(() => {
-  const lang = languages.find(item => item.value === locale.value)
-  return lang ? lang.flag : 'fi fi-us'
-})
-
 // 处理语言切换
-const handleMenuClick = ({ key }: { key: string }) => {
-  if (key === locale.value) return
+const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
+  const langKey = key.toString()
+  if (langKey === locale.value) return
   
-  locale.value = key
+  locale.value = langKey
   // 使用选中语言的提示文本
   const messageText = {
     'zh-CN': '切换语言成功',
@@ -76,18 +67,35 @@ const handleMenuClick = ({ key }: { key: string }) => {
     'es-ES': 'Idioma cambiado con éxito',
     'ja-JP': '言語が正常に切り替わりました',
     'ko-KR': '언어가 성공적으로 변경되었습니다'
-  }[key]
+  }[langKey]
   
   message.success(messageText)
 }
+
+const currentLangFlag = computed(() => {
+  return languages.find(lang => lang.value === locale.value)?.flag
+})
 </script>
 
 <style lang="less" scoped>
-.lang-trigger {
-  display: inline-flex;
+.lang-switch {
+  display: flex;
   align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   cursor: pointer;
-  padding: 0 12px;
+  transition: all 0.3s ease;
+  color: v-bind('token.colorText');
+  
+  &:hover {
+    background: v-bind('token.colorBgTextHover');
+  }
+  
+  :deep(svg) {
+    font-size: 18px;
+  }
 }
 
 .flag-icon {
@@ -97,18 +105,5 @@ const handleMenuClick = ({ key }: { key: string }) => {
 
 .lang-label {
   margin-left: 8px;
-}
-
-/* 阿拉伯语时调整图标位置 */
-:dir(rtl) {
-  .flag-icon {
-    margin-right: 0;
-    margin-left: 8px;
-  }
-
-  .lang-label {
-    margin-left: 0;
-    margin-right: 8px;
-  }
 }
 </style> 
